@@ -134,9 +134,7 @@ public class FlightController {
 		try (FileReader reader = new FileReader(file))
 		{
 			Object obj = jsonParser.parse(reader);
-
 			JSONArray flightList = (JSONArray) obj;
-			//System.out.println(flightList);
 
 			flightList.forEach( flitghsJSon -> { 
 					try {
@@ -168,9 +166,7 @@ public class FlightController {
 		try (FileReader reader = new FileReader(file))
 		{
 			Object obj = jsonParser.parse(reader);
-
 			JSONArray airportsList = (JSONArray) obj;
-			//System.out.println(flightList);
 
 			airportsList.forEach( airportsJSon -> {
 				listAirports.add(transformAirportsInfo( (JSONObject) airportsJSon ));
@@ -182,11 +178,9 @@ public class FlightController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
-
 			e.printStackTrace();
 		}
 		return listAirports;
-
 	}
 
 	private Voo transformFlightInfo(JSONObject info) throws java.text.ParseException

@@ -95,7 +95,7 @@ public class Voo implements Serializable {
 		this.preco = preco;
 	}
 
-	public Operator gerOperator() {
+	public Operator getOperator() {
 		return operator;
 	}
 
