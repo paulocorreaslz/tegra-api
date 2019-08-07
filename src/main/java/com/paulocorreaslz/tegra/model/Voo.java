@@ -7,6 +7,8 @@ package com.paulocorreaslz.tegra.model;
 */
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 import com.paulocorreaslz.tegra.util.Company;
 
@@ -19,14 +21,14 @@ public class Voo implements Serializable {
 	private String numeroVoo;
 	private String origem;
 	private String destino;
-	private String data;
+	private Date data;
 	private String horarioSaida;
 	private String horarioChegada;
-	private Number preco;
+	private BigDecimal preco;
 	private Company company;
 	
 	
-	public Voo (String numero, String origem, String destino, String data, String saida, String chegada, Number preco, Company company) {
+	public Voo (String numero, String origem, String destino, Date data, String saida, String chegada, BigDecimal preco, Company company) {
 		this.numeroVoo = numero;
 		this.origem = origem;
 		this.destino = destino;
@@ -61,11 +63,11 @@ public class Voo implements Serializable {
 		this.destino = destino;
 	}
 
-	public String getData() {
+	public Date getData() {
 		return data;
 	}
 
-	public void setData(String data) {
+	public void setData(Date data) {
 		this.data = data;
 	}
 
@@ -85,11 +87,11 @@ public class Voo implements Serializable {
 		this.horarioChegada = horarioChegada;
 	}
 
-	public Number getPreco() {
+	public BigDecimal getPreco() {
 		return preco;
 	}
 
-	public void setPreco(Number preco) {
+	public void setPreco(BigDecimal preco) {
 		this.preco = preco;
 	}
 
