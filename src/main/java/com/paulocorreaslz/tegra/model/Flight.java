@@ -8,6 +8,7 @@ package com.paulocorreaslz.tegra.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.paulocorreaslz.tegra.util.Operator;
@@ -21,14 +22,14 @@ public class Flight implements Serializable {
 	private String numFlight;
 	private String origin;
 	private String destination;
-	private Date dateStart;
+	private LocalDate dateStart;
 	private String timeDeparture;
 	private String timeArrival;
 	private BigDecimal price;
 	private Operator operator;
 	
 	
-	public Flight (String numflight, String origin, String destination, Date dateStart, String timeDeparture, String timeArrival, BigDecimal price, Operator operator) {
+	public Flight (String numflight, String origin, String destination, LocalDate dateStart, String timeDeparture, String timeArrival, BigDecimal price, Operator operator) {
 		this.numFlight = numflight;
 		this.origin = origin;
 		this.destination = destination;
@@ -70,12 +71,12 @@ public class Flight implements Serializable {
 	}
 
 
-	public Date getDateStart() {
+	public LocalDate getDateStart() {
 		return dateStart;
 	}
 
 
-	public void setDateStart(Date dateStart) {
+	public void setDateStart(LocalDate dateStart) {
 		this.dateStart = dateStart;
 	}
 

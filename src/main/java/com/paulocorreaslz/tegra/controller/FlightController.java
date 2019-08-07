@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,7 +60,7 @@ public class FlightController {
 			List<CSVRecord> list = parser.getRecords();
 			int line = 1, item = 0;
 			String numFlight = null, origin = null, destination = null,  timeDeparture = null, timeArrival = null;
-			Date dateStart = null;
+			LocalDate dateStart = null;
 			BigDecimal price = null;
 			Operator operator = null;
 			// item mapping
@@ -82,7 +84,8 @@ public class FlightController {
 							destination = value.toString();
 							System.out.println("destino: "+value);
 						} else if (item == 3) {
-							dateStart = new SimpleDateFormat("yyyy-MM-ss").parse((String) value);
+							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+							dateStart = LocalDate.parse((String) value, formatter);
 							System.out.println("data: "+value);
 						} else if (item == 4) {
 							timeDeparture = value.toString();
@@ -198,7 +201,8 @@ public class FlightController {
 		String destinationJsonValue = (String) info.get("destino");
 		System.out.println("destino:"+destinationJsonValue);
 		
-		Date dateStartJsonValue = new SimpleDateFormat("yyyy-MM-ss").parse((String) info.get("data_saida"));
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		LocalDate dateStartJsonValue = LocalDate.parse((String) info.get("data_saida"), formatter);
 		System.out.println("data:"+dateStartJsonValue);
 
 		String timeDepartureJsonValue = (String) info.get("saida");
