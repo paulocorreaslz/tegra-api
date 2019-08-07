@@ -1,5 +1,7 @@
 package com.paulocorreaslz.tegra.controller;
 
+import static org.mockito.Matchers.anyString;
+
 /*
  *
  * Criado por Paulo Correa <pauloyaco@gmail.com> - 2019
@@ -38,6 +40,9 @@ import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.model.Flight;
 import com.paulocorreaslz.tegra.util.Operator;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -49,6 +54,7 @@ import org.json.simple.parser.ParseException;
 @CrossOrigin(origins = {"http://localhost","*"})
 @RestController
 @RequestMapping("/api")
+@Api(value = "FlightController", description = "REST APIs for search flights and airports!")
 public class FlightController {
 
 	// 
@@ -56,11 +62,13 @@ public class FlightController {
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	// metodo inicial de teste de aplicação online.
+	@ApiOperation(value = "Método para verificar a resposta da aplicação", response = java.lang.String.class, tags = "verificar disponibilidade da aplicação")
 	@GetMapping("/online")
 	public String online() {
 		return "online";
 	}
 
+	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir", response = Iterable.class, tags = "listar voos operados pela uberair")
 	@SuppressWarnings("resource")
 	@GetMapping("/uber")
 	public List<Flight> getUberFlights() throws java.text.ParseException, NumberFormatException  {
@@ -132,6 +140,7 @@ public class FlightController {
 		return listFlights;
 	}
 
+	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir e 99Planes", response = Iterable.class, tags = "listar todos os voos")
 	@SuppressWarnings("unchecked")
 	@GetMapping("/all")
 	public List<Flight> getAllFlights() throws IOException, java.text.ParseException{
@@ -143,6 +152,7 @@ public class FlightController {
 		return listAll;
 	}
 
+	@ApiOperation(value = "Método para buscar trechos de voos operados pela 99planes", response = Iterable.class, tags = "listar voos operados pela 99planes")
 	@SuppressWarnings("unchecked")
 	@GetMapping("/planes")
 	public List<Flight> getPlanesFlights() throws IOException{
@@ -175,6 +185,7 @@ public class FlightController {
 		return listFlights;
 	}
 
+	@ApiOperation(value = "Método para buscar aeroportos disponiveis", response = Iterable.class, tags = "listar aeroportos")
 	@SuppressWarnings("unchecked")
 	@GetMapping("/airports")
 	private List<Airport> loadAirports() throws IOException {
@@ -251,6 +262,7 @@ public class FlightController {
 		return airport;	  
 	}
 	
+	@ApiOperation(value = "Método para buscar de voos operados pela uberAir e 99planes por origem, destino e data especificos", response = Iterable.class, tags = "buscar voos por origem, destino e data")
 	@GetMapping("/search/{origin}/{destination}/{datesearch}")
 	public List<Flight> searchFlights(@PathVariable("origin") String origin, @PathVariable("destination") String destination, @PathVariable("datesearch") String dateSearch) throws IOException, java.text.ParseException{
 		List<Flight> listGetFlights = new ArrayList<Flight>();
