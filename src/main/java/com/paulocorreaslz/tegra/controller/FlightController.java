@@ -105,7 +105,7 @@ public class FlightController {
 	      String chegadaJsonValue = (String) info.get("chegada");
 	      System.out.println("chegada:"+chegadaJsonValue);
 	      
-	      Double valorJsonValue = (Double) info.get("valor");
+	      Number valorJsonValue = (Number) info.get("valor");
 	      System.out.println("data:"+valorJsonValue);
 	      
 	      System.out.println("----------------------------------");
