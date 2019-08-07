@@ -12,7 +12,7 @@ import java.util.Date;
 
 import com.paulocorreaslz.tegra.util.Operator;
 
-public class Voo implements Serializable {
+public class Flight implements Serializable {
 	
 	/**
 	 * 
@@ -28,7 +28,7 @@ public class Voo implements Serializable {
 	private Operator operator;
 	
 	
-	public Voo (String numero, String origem, String destino, Date data, String saida, String chegada, BigDecimal preco, Operator operator) {
+	public Flight (String numero, String origem, String destino, Date data, String saida, String chegada, BigDecimal preco, Operator operator) {
 		this.numeroVoo = numero;
 		this.origem = origem;
 		this.destino = destino;

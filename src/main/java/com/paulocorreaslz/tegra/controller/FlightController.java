@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.paulocorreaslz.tegra.model.Airport;
-import com.paulocorreaslz.tegra.model.Voo;
+import com.paulocorreaslz.tegra.model.Flight;
 import com.paulocorreaslz.tegra.util.Operator;
 
 import org.apache.commons.csv.CSVFormat;
@@ -39,6 +39,7 @@ import org.json.simple.parser.ParseException;
 @RequestMapping("/api")
 public class FlightController {
 
+	// metodo inicial de teste de aplicação online.
 	@GetMapping("/online")
 	public String online() {
 		return "online";
@@ -46,8 +47,8 @@ public class FlightController {
 
 	@SuppressWarnings("resource")
 	@GetMapping("/uber")
-	public List<Voo> getUberFlights() throws java.text.ParseException  {
-		List<Voo> listVoos = new ArrayList<Voo>();
+	public List<Flight> getUberFlights() throws java.text.ParseException  {
+		List<Flight> listFlights = new ArrayList<Flight>();
 		try {
 			File file = new ClassPathResource("uberair.csv").getFile();
 			System.out.println(file.getAbsolutePath());
@@ -59,6 +60,7 @@ public class FlightController {
 			String numero_voo = null, aeroporto_origem= null, aeroporto_destino= null,  horario_saida= null, horario_chegada= null;
 			Date data = null;
 			BigDecimal preco= null;
+			Operator operator=null;
 			// item mapping
 			// 0 = numero_voo
 			// 1 = aeroporto_origem
@@ -91,15 +93,17 @@ public class FlightController {
 						} else if (item == 6) {
 							System.out.println("preco: "+valor);
 							preco = new BigDecimal(Double.parseDouble((String) valor));
-							System.out.println("Operator:"+Operator.UBERAIR);
+							operator = Operator.UBERAIR;
+							System.out.println("Operator:"+operator);
 							System.out.println("----------------------------------");
+							
 						}
 					}
 					if (item < 6) {
 						item++;
 					} else {
-						Voo voo = new Voo(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco, Operator.UBERAIR);
-						listVoos.add(voo);
+						Flight flight = new Flight(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco, operator);
+						listFlights.add(flight);
 						item = 0;
 					}
 				}
@@ -110,13 +114,13 @@ public class FlightController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return listVoos;
+		return listFlights;
 	}
 
 	@SuppressWarnings("unchecked")
 	@GetMapping("/all")
-	public List<Voo> getAllFlights() throws IOException, java.text.ParseException{
-		List<Voo> listAll = new ArrayList<Voo>();
+	public List<Flight> getAllFlights() throws IOException, java.text.ParseException{
+		List<Flight> listAll = new ArrayList<Flight>();
 
 		listAll.addAll(getPlanesFlights());
 		listAll.addAll(getUberFlights());
@@ -126,9 +130,9 @@ public class FlightController {
 
 	@SuppressWarnings("unchecked")
 	@GetMapping("/planes")
-	public List<Voo> getPlanesFlights() throws IOException{
+	public List<Flight> getPlanesFlights() throws IOException{
 
-		List<Voo> listVoos = new ArrayList<>();
+		List<Flight> listFlights = new ArrayList<>();
 		File file = new ClassPathResource("99planes.json").getFile();
 		JSONParser jsonParser = new JSONParser();
 		try (FileReader reader = new FileReader(file))
@@ -138,7 +142,7 @@ public class FlightController {
 
 			flightList.forEach( flitghsJSon -> { 
 					try {
-						listVoos.add(transformFlightInfo( (JSONObject) flitghsJSon ));
+						listFlights.add(transformFlightInfo( (JSONObject) flitghsJSon ));
 					} catch (java.text.ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -153,7 +157,7 @@ public class FlightController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		return listVoos;
+		return listFlights;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -180,11 +184,10 @@ public class FlightController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
 		return listAirports;
 	}
 
-	private Voo transformFlightInfo(JSONObject info) throws java.text.ParseException
+	private Flight transformFlightInfo(JSONObject info) throws java.text.ParseException
 	{
 
 		String numVooJsonValue = (String) info.get("voo");
@@ -212,8 +215,8 @@ public class FlightController {
 		System.out.println("Operator:"+Operator.PLANES);
 
 		System.out.println("----------------------------------");
-		Voo voo = new Voo(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue, Operator.PLANES);
-		return voo;
+		Flight flight = new Flight(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue, Operator.PLANES);
+		return flight;
 	}
 
 	private Airport transformAirportsInfo(JSONObject info)
