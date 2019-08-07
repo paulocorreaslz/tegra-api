@@ -18,7 +18,9 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,20 +49,18 @@ public class FlightController {
 
 	@SuppressWarnings("resource")
 	@GetMapping("/uber")
-	public List<Flight> getUberFlights() throws java.text.ParseException  {
+	public List<Flight> getUberFlights() throws java.text.ParseException, NumberFormatException  {
 		List<Flight> listFlights = new ArrayList<Flight>();
 		try {
 			File file = new ClassPathResource("uberair.csv").getFile();
-			System.out.println(file.getAbsolutePath());
 			Reader in = new FileReader( file );
 			CSVParser parser = new CSVParser( in, CSVFormat.DEFAULT );
 			List<CSVRecord> list = parser.getRecords();
-			int line = 1;
-			int item = 0;
-			String numero_voo = null, aeroporto_origem= null, aeroporto_destino= null,  horario_saida= null, horario_chegada= null;
-			Date data = null;
-			BigDecimal preco= null;
-			Operator operator=null;
+			int line = 1, item = 0;
+			String numFlight = null, origin = null, destination = null,  timeDeparture = null, timeArrival = null;
+			Date dateStart = null;
+			BigDecimal price = null;
+			Operator operator = null;
 			// item mapping
 			// 0 = numero_voo
 			// 1 = aeroporto_origem
@@ -70,39 +70,38 @@ public class FlightController {
 			// 5 = horario_chegada
 			// 6 = preco
 			for( CSVRecord row : list ) {
-				for( Object valor : row ) {
+				for( Object value : row ) {
 					if (line > 1) {
 						if (item == 0) {
-							numero_voo = valor.toString();
-							System.out.println("voo: "+valor);
+							numFlight = value.toString();
+							System.out.println("voo: "+value);
 						} else if (item == 1) {
-							aeroporto_origem = valor.toString();
-							System.out.println("origem: "+valor);
+							origin = value.toString();
+							System.out.println("origem: "+value);
 						} else if (item == 2) {
-							aeroporto_destino = valor.toString();
-							System.out.println("destino: "+valor);
+							destination = value.toString();
+							System.out.println("destino: "+value);
 						} else if (item == 3) {
-							data = new SimpleDateFormat("yyyy-MM-ss").parse((String) valor);
-							System.out.println("data: "+valor);
+							dateStart = new SimpleDateFormat("yyyy-MM-ss").parse((String) value);
+							System.out.println("data: "+value);
 						} else if (item == 4) {
-							horario_saida = valor.toString();
-							System.out.println("saida: "+valor);
+							timeDeparture = value.toString();
+							System.out.println("saida: "+value);
 						} else if (item == 5) {
-							horario_chegada = valor.toString();
-							System.out.println("chegada: "+valor);
+							timeArrival = value.toString();
+							System.out.println("chegada: "+value);
 						} else if (item == 6) {
-							System.out.println("preco: "+valor);
-							preco = new BigDecimal(Double.parseDouble((String) valor));
+							System.out.println("preco: "+value);
+							price = new BigDecimal(Double.parseDouble((String) value));
 							operator = Operator.UBERAIR;
 							System.out.println("Operator:"+operator);
-							System.out.println("----------------------------------");
-							
+							System.out.println("----------------------------------");	
 						}
 					}
 					if (item < 6) {
 						item++;
 					} else {
-						Flight flight = new Flight(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco, operator);
+						Flight flight = new Flight(numFlight, origin, destination, dateStart, timeDeparture, timeArrival, price, operator);
 						listFlights.add(flight);
 						item = 0;
 					}
@@ -161,7 +160,7 @@ public class FlightController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@GetMapping("/aeroportos")
+	@GetMapping("/airports")
 	private List<Airport> loadAirports() throws IOException {
 
 		List<Airport> listAirports = new ArrayList<>();
@@ -174,8 +173,8 @@ public class FlightController {
 
 			airportsList.forEach( airportsJSon -> {
 				listAirports.add(transformAirportsInfo( (JSONObject) airportsJSon ));
-			}
-					);
+					}
+				);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -190,32 +189,32 @@ public class FlightController {
 	private Flight transformFlightInfo(JSONObject info) throws java.text.ParseException
 	{
 
-		String numVooJsonValue = (String) info.get("voo");
-		System.out.println("voo:"+numVooJsonValue);
+		String flightJsonValue = (String) info.get("voo");
+		System.out.println("voo:"+flightJsonValue);
 
-		String origemJsonValue = (String) info.get("origem");
-		System.out.println("origem:"+origemJsonValue);
+		String originJsonValue = (String) info.get("origem");
+		System.out.println("origem:"+originJsonValue);
 
-		String destinoJsonValue = (String) info.get("destino");
-		System.out.println("destino:"+destinoJsonValue);
+		String destinationJsonValue = (String) info.get("destino");
+		System.out.println("destino:"+destinationJsonValue);
 		
-		Date dataJsonValue = new SimpleDateFormat("yyyy-MM-ss").parse((String) info.get("data_saida"));
-		System.out.println("data:"+dataJsonValue);
+		Date dateStartJsonValue = new SimpleDateFormat("yyyy-MM-ss").parse((String) info.get("data_saida"));
+		System.out.println("data:"+dateStartJsonValue);
 
-		String saidaJsonValue = (String) info.get("saida");
-		System.out.println("saida:"+saidaJsonValue);
+		String timeDepartureJsonValue = (String) info.get("saida");
+		System.out.println("saida:"+timeDepartureJsonValue);
 
-		String chegadaJsonValue = (String) info.get("chegada");
-		System.out.println("chegada:"+chegadaJsonValue);
+		String timeArrivalJsonValue = (String) info.get("chegada");
+		System.out.println("chegada:"+timeArrivalJsonValue);
 
-		Number valor = (Number) info.get("valor");
-		BigDecimal valorJsonValue = new BigDecimal(valor.longValue());
+		Number priceJsonValue = (Number) info.get("valor");
+		BigDecimal valorJsonValue = new BigDecimal(priceJsonValue.longValue());
 		System.out.println("valor:"+valorJsonValue);
 
 		System.out.println("Operator:"+Operator.PLANES);
 
 		System.out.println("----------------------------------");
-		Flight flight = new Flight(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue, Operator.PLANES);
+		Flight flight = new Flight(flightJsonValue, originJsonValue, destinationJsonValue, dateStartJsonValue, timeDepartureJsonValue, timeArrivalJsonValue, valorJsonValue, Operator.PLANES);
 		return flight;
 	}
 
@@ -236,5 +235,16 @@ public class FlightController {
 
 		Airport airport = new Airport(nomeJsonValue, aeroportoJsonValue, cidadeJsonValue);
 		return airport;	  
+	}
+	
+	@GetMapping("/search/{airport}/{start}/{end}")
+	public List<Flight> searchFlights(@PathVariable("airport") String airport, @PathVariable("start") String start,@PathVariable("end") String end){
+		List<Flight> listGetFlights = new ArrayList<Flight>();
+			
+			System.out.println("airport: "+ airport);
+			System.out.println("start: "+start);
+			System.out.println("end:"+ end);
+			
+		return listGetFlights;
 	}
 }

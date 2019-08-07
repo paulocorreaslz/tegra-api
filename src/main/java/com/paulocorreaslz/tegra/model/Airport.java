@@ -10,39 +10,38 @@ package com.paulocorreaslz.tegra.model;
 
 public class Airport {
 	
-	private String nome;
-	private String aeroporto;
-	private String cidade;
+	private String name;
+	private String airport;
+	private String city;
 	
-	public Airport(String nome, String aeroporto, String cidade) {
-		this.nome = nome;
-		this.aeroporto = aeroporto;
-		this.cidade = cidade;
+	public Airport(String name, String airport, String city) {
+		this.name = name;
+		this.airport = airport;
+		this.city = city;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getName() {
+		return name;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getAeroporto() {
-		return aeroporto;
+	public String getAirport() {
+		return airport;
 	}
 
-	public void setAeroporto(String aeroporto) {
-		this.aeroporto = aeroporto;
+	public void setAirport(String airport) {
+		this.airport = airport;
 	}
 
-	public String getCidade() {
-		return cidade;
+	public String getCity() {
+		return city;
 	}
 
-	public void setCidade(String cidade) {
-		this.cidade = cidade;
+	public void setCity(String city) {
+		this.city = city;
 	}
-	
-	
+
 }

@@ -18,89 +18,105 @@ public class Flight implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String numeroVoo;
-	private String origem;
-	private String destino;
-	private Date data;
-	private String horarioSaida;
-	private String horarioChegada;
-	private BigDecimal preco;
+	private String numFlight;
+	private String origin;
+	private String destination;
+	private Date dateStart;
+	private String timeDeparture;
+	private String timeArrival;
+	private BigDecimal price;
 	private Operator operator;
 	
 	
-	public Flight (String numero, String origem, String destino, Date data, String saida, String chegada, BigDecimal preco, Operator operator) {
-		this.numeroVoo = numero;
-		this.origem = origem;
-		this.destino = destino;
-		this.data = data;
-		this.horarioSaida = saida;
-		this.horarioChegada = chegada;
-		this.preco = preco;
+	public Flight (String numflight, String origin, String destination, Date dateStart, String timeDeparture, String timeArrival, BigDecimal price, Operator operator) {
+		this.numFlight = numflight;
+		this.origin = origin;
+		this.destination = destination;
+		this.dateStart = dateStart;
+		this.timeDeparture = timeDeparture;
+		this.timeArrival = timeArrival;
+		this.price = price;
 		this.operator = operator;
 	}
 
-	public String getNumeroVoo() {
-		return numeroVoo;
+
+	public String getNumFlight() {
+		return numFlight;
 	}
 
-	public void setNumeroVoo(String numeroVoo) {
-		this.numeroVoo = numeroVoo;
+
+	public void setNumFlight(String numFlight) {
+		this.numFlight = numFlight;
 	}
 
-	public String getOrigem() {
-		return origem;
+
+	public String getOrigin() {
+		return origin;
 	}
 
-	public void setOrigem(String origem) {
-		this.origem = origem;
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
 	}
 
-	public String getDestino() {
-		return destino;
+
+	public String getDestination() {
+		return destination;
 	}
 
-	public void setDestino(String destino) {
-		this.destino = destino;
+
+	public void setDestination(String destination) {
+		this.destination = destination;
 	}
 
-	public Date getData() {
-		return data;
+
+	public Date getDateStart() {
+		return dateStart;
 	}
 
-	public void setData(Date data) {
-		this.data = data;
+
+	public void setDateStart(Date dateStart) {
+		this.dateStart = dateStart;
 	}
 
-	public String getHorarioSaida() {
-		return horarioSaida;
+
+	public String getTimeDeparture() {
+		return timeDeparture;
 	}
 
-	public void setHorarioSaida(String horarioSaida) {
-		this.horarioSaida = horarioSaida;
+
+	public void setTimeDeparture(String timeDeparture) {
+		this.timeDeparture = timeDeparture;
 	}
 
-	public String getHorarioChegada() {
-		return horarioChegada;
+
+	public String getTimeArrival() {
+		return timeArrival;
 	}
 
-	public void setHorarioChegada(String horarioChegada) {
-		this.horarioChegada = horarioChegada;
+
+	public void setTimeArrival(String timeArrival) {
+		this.timeArrival = timeArrival;
 	}
 
-	public BigDecimal getPreco() {
-		return preco;
+
+	public BigDecimal getPrice() {
+		return price;
 	}
 
-	public void setPreco(BigDecimal preco) {
-		this.preco = preco;
+
+	public void setPrice(BigDecimal price) {
+		this.price = price;
 	}
+
 
 	public Operator getOperator() {
 		return operator;
 	}
 
+
 	public void setOperator(Operator operator) {
 		this.operator = operator;
 	}
-	
+
 }
