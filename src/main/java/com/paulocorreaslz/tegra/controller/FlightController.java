@@ -18,6 +18,10 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -254,21 +258,26 @@ public class FlightController {
 		System.out.println("airport destination get: "+ destination);
 		System.out.println("date:"+ dateSearch);
 		
-		listGetFlights = getFlightsFromOriginDestination(origin, destination);
+		LocalDate dateFlight = LocalDate.parse((String) dateSearch, dateFormatter);
+		
+		listGetFlights = getFlightsFromOriginDestination(origin, destination, dateFlight);
 			
 		return listGetFlights;
 	}
 	
-	private List<Flight> getFlightsFromOriginDestination(String airportOrigin, String airportDestination) throws IOException, java.text.ParseException{
+	private List<Flight> getFlightsFromOriginDestination(String airportOrigin, String airportDestination, LocalDate flightDate) throws IOException, java.text.ParseException{
 		List<Flight> listFlights = new ArrayList<Flight>();
 		List<Flight> listReturnFlights = new ArrayList<Flight>();
 		listFlights = getAllFlights();
+		
 		System.out.println("looking for flights on origin: "+ airportOrigin+ " destination:"+airportDestination);
 		int found = 0;
 		for (Flight flight: listFlights) {
 			if (flight.getOrigin() != null) {
-				System.out.println("Flight: "+flight.toString());
-				if (flight.getOrigin().equals(airportOrigin) && flight.getDestination().equals(airportDestination)) {
+				System.out.println(flight.toString());
+				if (flight.getOrigin().equals(airportOrigin) && 
+						flight.getDestination().equals(airportDestination) &&
+						flight.getDateStart().equals(flightDate)) {
 					System.out.println("Flight found...");
 					listReturnFlights.add(flight);
 					found++;
