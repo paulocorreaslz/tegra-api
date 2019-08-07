@@ -157,7 +157,7 @@ public class FlightController {
 	}
 
 	@SuppressWarnings("unchecked")
-	@GetMapping("/air")
+	@GetMapping("/aeroportos")
 	private List<Airport> loadAirports() throws IOException {
 
 		List<Airport> listAirports = new ArrayList<>();
@@ -180,6 +180,7 @@ public class FlightController {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+		
 		return listAirports;
 	}
 
