@@ -9,17 +9,17 @@ package com.paulocorreaslz.tegra.model;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-public class Voo<T> implements Serializable {
+public class Voo implements Serializable {
 	
 	private long id ;
 	private String numeroVoo;
 	private String origem;
 	private String destino;
-	private LocalDate data;
-	private LocalDate horarioSaida;
-	private LocalDate horarioChegada;
+	private String data;
+	private String horarioSaida;
+	private String horarioChegada;
 	
-	public Voo (String numero, String origem, String destino, LocalDate data, LocalDate saida, LocalDate chegada) {
+	public Voo (String numero, String origem, String destino, String data, String saida, String chegada) {
 		this.numeroVoo = numero;
 		this.origem = origem;
 		this.destino = destino;
@@ -52,27 +52,27 @@ public class Voo<T> implements Serializable {
 		this.destino = destino;
 	}
 
-	public LocalDate getData() {
+	public String getData() {
 		return data;
 	}
 
-	public void setData(LocalDate data) {
+	public void setData(String data) {
 		this.data = data;
 	}
 
-	public LocalDate getHorarioSaida() {
+	public String getHorarioSaida() {
 		return horarioSaida;
 	}
 
-	public void setHorarioSaida(LocalDate horarioSaida) {
+	public void setHorarioSaida(String horarioSaida) {
 		this.horarioSaida = horarioSaida;
 	}
 
-	public LocalDate getHorarioChegada() {
+	public String getHorarioChegada() {
 		return horarioChegada;
 	}
 
-	public void setHorarioChegada(LocalDate horarioChegada) {
+	public void setHorarioChegada(String horarioChegada) {
 		this.horarioChegada = horarioChegada;
 	}
 	
