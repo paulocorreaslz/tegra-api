@@ -41,18 +41,64 @@ public class FlightController {
 	}
 
 	@GetMapping("/uber")
-	public List<CSVRecord> getUberAirFlights()  {
-		List<CSVRecord> dados = null;
+	public List<Voo> getUberAirFlights()  {
+		List<Voo> dados = new ArrayList<Voo>();
 		try {
 			File file = new ClassPathResource("uberair.csv").getFile();
 			System.out.println(file.getAbsolutePath());
 			Reader in = new FileReader( file );
 			CSVParser parser = new CSVParser( in, CSVFormat.DEFAULT );
 			List<CSVRecord> list = parser.getRecords();
-			dados = list;
-			for( CSVRecord row : list )
-				for( String entry : row )
-					System.out.println( entry );
+			int line = 1;
+			int item = 0;
+			String numero_voo = null, aeroporto_origem= null, aeroporto_destino= null, data= null, horario_saida= null, horario_chegada= null;
+			Number preco= null;
+			// item mapping
+			// 0 = numero_voo
+			// 1 = aeroporto_origem
+			// 2 = aeroporto_destino
+			// 3 = data 
+			// 4 = horario_saida
+			// 5 = horario_chegada
+			// 6 = preco
+			for( CSVRecord row : list ) {
+				for( Object valor : row ) {
+					if (line > 1) {
+						if (item == 0) {
+							numero_voo = valor.toString();
+							System.out.println("voo: "+valor);
+						} else if (item == 1) {
+							aeroporto_origem = valor.toString();
+							System.out.println("origem: "+valor);
+						} else if (item == 2) {
+							aeroporto_destino = valor.toString();
+							System.out.println("destino: "+valor);
+						} else if (item == 3) {
+							data = valor.toString();
+							System.out.println("data: "+valor);
+						} else if (item == 4) {
+							horario_saida = valor.toString();
+							System.out.println("saida: "+valor);
+						} else if (item == 5) {
+							horario_chegada = valor.toString();
+							System.out.println("chegada: "+valor);
+						} else if (item == 6) {
+							System.out.println("preco: "+valor);
+							preco = (Number) Double.valueOf((String) valor);
+						}
+					}
+					if (item < 6) {
+						item++;
+					} else {
+						Voo voo = new Voo(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco);
+						dados.add(voo);
+						item = 0;
+					}
+				}
+				line++;
+			}
+				
+					
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -132,8 +178,8 @@ public class FlightController {
 	private Voo transformFlightInfo(JSONObject info)
 	{
 
-		String vooJsonValue = (String) info.get("voo");
-		System.out.println("voo:"+vooJsonValue);
+		String numVooJsonValue = (String) info.get("voo");
+		System.out.println("voo:"+numVooJsonValue);
 
 		String origemJsonValue = (String) info.get("origem");
 		System.out.println("origem:"+origemJsonValue);
@@ -151,10 +197,10 @@ public class FlightController {
 		System.out.println("chegada:"+chegadaJsonValue);
 
 		Number valorJsonValue = (Number) info.get("valor");
-		System.out.println("data:"+valorJsonValue);
+		System.out.println("valor:"+valorJsonValue);
 
 		System.out.println("----------------------------------");
-		Voo voo = new Voo(vooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue);
+		Voo voo = new Voo(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue);
 		return voo;
 	}
 

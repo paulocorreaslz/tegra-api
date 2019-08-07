@@ -18,14 +18,16 @@ public class Voo implements Serializable {
 	private String data;
 	private String horarioSaida;
 	private String horarioChegada;
+	private Number preco;
 	
-	public Voo (String numero, String origem, String destino, String data, String saida, String chegada) {
+	public Voo (String numero, String origem, String destino, String data, String saida, String chegada, Number preco) {
 		this.numeroVoo = numero;
 		this.origem = origem;
 		this.destino = destino;
 		this.data = data;
 		this.horarioSaida = saida;
 		this.horarioChegada = chegada;
+		this.preco = preco;
 	}
 
 	public String getNumeroVoo() {
@@ -75,5 +77,14 @@ public class Voo implements Serializable {
 	public void setHorarioChegada(String horarioChegada) {
 		this.horarioChegada = horarioChegada;
 	}
+
+	public Number getPreco() {
+		return preco;
+	}
+
+	public void setPreco(Number preco) {
+		this.preco = preco;
+	}
+	
 	
 }
