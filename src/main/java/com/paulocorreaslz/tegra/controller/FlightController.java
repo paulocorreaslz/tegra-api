@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.model.Voo;
-import com.paulocorreaslz.tegra.util.Company;
+import com.paulocorreaslz.tegra.util.Operator;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -91,23 +91,20 @@ public class FlightController {
 						} else if (item == 6) {
 							System.out.println("preco: "+valor);
 							preco = new BigDecimal(Double.parseDouble((String) valor));
-							System.out.println("Company:"+Company.UBERAIR);
+							System.out.println("Operator:"+Operator.UBERAIR);
 							System.out.println("----------------------------------");
-
 						}
 					}
 					if (item < 6) {
 						item++;
 					} else {
-						Voo voo = new Voo(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco, Company.UBERAIR);
+						Voo voo = new Voo(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco, Operator.UBERAIR);
 						listVoos.add(voo);
 						item = 0;
 					}
 				}
 				line++;
 			}
-
-
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -132,11 +129,8 @@ public class FlightController {
 	public List<Voo> getPlanesFlights() throws IOException{
 
 		List<Voo> listVoos = new ArrayList<>();
-
 		File file = new ClassPathResource("99planes.json").getFile();
-
 		JSONParser jsonParser = new JSONParser();
-
 		try (FileReader reader = new FileReader(file))
 		{
 			Object obj = jsonParser.parse(reader);
@@ -169,11 +163,8 @@ public class FlightController {
 	private List<Airport> loadAirports() throws IOException {
 
 		List<Airport> listAirports = new ArrayList<>();
-
 		File file = new ClassPathResource("aeroportos.json").getFile();
-
 		JSONParser jsonParser = new JSONParser();
-
 		try (FileReader reader = new FileReader(file))
 		{
 			Object obj = jsonParser.parse(reader);
@@ -185,7 +176,6 @@ public class FlightController {
 				listAirports.add(transformAirportsInfo( (JSONObject) airportsJSon ));
 			}
 					);
-
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -224,10 +214,10 @@ public class FlightController {
 		BigDecimal valorJsonValue = new BigDecimal(valor.longValue());
 		System.out.println("valor:"+valorJsonValue);
 
-		System.out.println("Company:"+Company.PLANES);
+		System.out.println("Operator:"+Operator.PLANES);
 
 		System.out.println("----------------------------------");
-		Voo voo = new Voo(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue, Company.PLANES);
+		Voo voo = new Voo(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue, Operator.PLANES);
 		return voo;
 	}
 

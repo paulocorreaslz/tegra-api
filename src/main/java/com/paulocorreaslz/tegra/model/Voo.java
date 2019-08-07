@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.paulocorreaslz.tegra.util.Company;
+import com.paulocorreaslz.tegra.util.Operator;
 
 public class Voo implements Serializable {
 	
@@ -25,10 +25,10 @@ public class Voo implements Serializable {
 	private String horarioSaida;
 	private String horarioChegada;
 	private BigDecimal preco;
-	private Company company;
+	private Operator operator;
 	
 	
-	public Voo (String numero, String origem, String destino, Date data, String saida, String chegada, BigDecimal preco, Company company) {
+	public Voo (String numero, String origem, String destino, Date data, String saida, String chegada, BigDecimal preco, Operator operator) {
 		this.numeroVoo = numero;
 		this.origem = origem;
 		this.destino = destino;
@@ -36,7 +36,7 @@ public class Voo implements Serializable {
 		this.horarioSaida = saida;
 		this.horarioChegada = chegada;
 		this.preco = preco;
-		this.company = company;
+		this.operator = operator;
 	}
 
 	public String getNumeroVoo() {
@@ -95,12 +95,12 @@ public class Voo implements Serializable {
 		this.preco = preco;
 	}
 
-	public Company getCompany() {
-		return company;
+	public Operator gerOperator() {
+		return operator;
 	}
 
-	public void setCompany(Company company) {
-		this.company = company;
+	public void setOperator(Operator operator) {
+		this.operator = operator;
 	}
 	
 }

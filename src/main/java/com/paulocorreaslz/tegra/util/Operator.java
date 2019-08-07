@@ -1,6 +1,6 @@
 package com.paulocorreaslz.tegra.util;
 
-public enum Company {
+public enum Operator {
 		UBERAIR,
 		PLANES
 }
