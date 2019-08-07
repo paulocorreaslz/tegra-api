@@ -7,11 +7,15 @@ package com.paulocorreaslz.tegra.model;
 */
 
 import java.io.Serializable;
-import java.time.LocalDate;
+
+import com.paulocorreaslz.tegra.util.Company;
 
 public class Voo implements Serializable {
 	
-	private long id ;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String numeroVoo;
 	private String origem;
 	private String destino;
@@ -19,8 +23,10 @@ public class Voo implements Serializable {
 	private String horarioSaida;
 	private String horarioChegada;
 	private Number preco;
+	private Company company;
 	
-	public Voo (String numero, String origem, String destino, String data, String saida, String chegada, Number preco) {
+	
+	public Voo (String numero, String origem, String destino, String data, String saida, String chegada, Number preco, Company company) {
 		this.numeroVoo = numero;
 		this.origem = origem;
 		this.destino = destino;
@@ -28,6 +34,7 @@ public class Voo implements Serializable {
 		this.horarioSaida = saida;
 		this.horarioChegada = chegada;
 		this.preco = preco;
+		this.company = company;
 	}
 
 	public String getNumeroVoo() {
@@ -85,6 +92,13 @@ public class Voo implements Serializable {
 	public void setPreco(Number preco) {
 		this.preco = preco;
 	}
-	
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 	
 }

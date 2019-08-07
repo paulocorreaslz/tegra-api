@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.model.Voo;
+import com.paulocorreaslz.tegra.util.Company;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -40,9 +41,10 @@ public class FlightController {
 		return "online";
 	}
 
+	@SuppressWarnings("resource")
 	@GetMapping("/uber")
-	public List<Voo> getUberAirFlights()  {
-		List<Voo> dados = new ArrayList<Voo>();
+	public List<Voo> getUberFlights()  {
+		List<Voo> listVoos = new ArrayList<Voo>();
 		try {
 			File file = new ClassPathResource("uberair.csv").getFile();
 			System.out.println(file.getAbsolutePath());
@@ -66,32 +68,34 @@ public class FlightController {
 					if (line > 1) {
 						if (item == 0) {
 							numero_voo = valor.toString();
-							System.out.println("voo: "+valor);
+							//System.out.println("voo: "+valor);
 						} else if (item == 1) {
 							aeroporto_origem = valor.toString();
-							System.out.println("origem: "+valor);
+							//System.out.println("origem: "+valor);
 						} else if (item == 2) {
 							aeroporto_destino = valor.toString();
-							System.out.println("destino: "+valor);
+							//System.out.println("destino: "+valor);
 						} else if (item == 3) {
 							data = valor.toString();
-							System.out.println("data: "+valor);
+							//System.out.println("data: "+valor);
 						} else if (item == 4) {
 							horario_saida = valor.toString();
-							System.out.println("saida: "+valor);
+							//System.out.println("saida: "+valor);
 						} else if (item == 5) {
 							horario_chegada = valor.toString();
-							System.out.println("chegada: "+valor);
+							//System.out.println("chegada: "+valor);
 						} else if (item == 6) {
-							System.out.println("preco: "+valor);
+							//System.out.println("preco: "+valor);
 							preco = (Number) Double.valueOf((String) valor);
+							//System.out.println("Company:"+Company.UBER);
+
 						}
 					}
 					if (item < 6) {
 						item++;
 					} else {
-						Voo voo = new Voo(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco);
-						dados.add(voo);
+						Voo voo = new Voo(numero_voo, aeroporto_origem, aeroporto_destino, data, horario_saida, horario_chegada, preco, Company.UBER);
+						listVoos.add(voo);
 						item = 0;
 					}
 				}
@@ -104,7 +108,17 @@ public class FlightController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return dados;
+		return listVoos;
+	}
+	@SuppressWarnings("unchecked")
+	@GetMapping("/all")
+	public List<Voo> getAllFlights() throws IOException{
+		List<Voo> listAll = new ArrayList<Voo>();
+		
+		listAll.addAll(getPlanesFlights());
+		listAll.addAll(getUberFlights());
+		
+		return listAll;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -156,7 +170,6 @@ public class FlightController {
 			JSONArray airportsList = (JSONArray) obj;
 			//System.out.println(flightList);
 
-			 //airportsList.forEach( airportsJSon -> transformAirportsInfo( (JSONObject) airportsJSon ) );
 			airportsList.forEach( airportsJSon -> {
 				 listAirports.add(transformAirportsInfo( (JSONObject) airportsJSon ));
 				}
@@ -198,9 +211,11 @@ public class FlightController {
 
 		Number valorJsonValue = (Number) info.get("valor");
 		System.out.println("valor:"+valorJsonValue);
+		
+		System.out.println("Company:"+Company.PLANES);
 
 		System.out.println("----------------------------------");
-		Voo voo = new Voo(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue);
+		Voo voo = new Voo(numVooJsonValue, origemJsonValue, destinoJsonValue, dataJsonValue, saidaJsonValue, chegadaJsonValue, valorJsonValue, Company.PLANES);
 		return voo;
 	}
 
@@ -219,7 +234,7 @@ public class FlightController {
 
 		System.out.println("----------------------------------");
 		
-		Airport air = new Airport(nomeJsonValue, aeroportoJsonValue, cidadeJsonValue);
-		return air;	  
+		Airport airport = new Airport(nomeJsonValue, aeroportoJsonValue, cidadeJsonValue);
+		return airport;	  
 	}
 }
