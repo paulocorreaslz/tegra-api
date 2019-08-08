@@ -10,9 +10,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 
 import com.paulocorreaslz.tegra.util.Operator;
+
+import io.swagger.annotations.ApiModelProperty;
 
 public class Flight implements Serializable {
 	
@@ -20,13 +21,21 @@ public class Flight implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@ApiModelProperty(notes = "Numero do voo",name="numFlight",required=true,value="numFlight")
 	private String numFlight;
+	@ApiModelProperty(notes = "Origem do voo",name="origin",required=true,value="origin")
 	private String origin;
+	@ApiModelProperty(notes = "destino do voo",name="destination",required=true,value="destination")
 	private String destination;
+	@ApiModelProperty(notes = "data do voo",name="dateStart",required=true,value="dateStart")
 	private LocalDate dateStart;
+	@ApiModelProperty(notes = "hora do partida",name="timeDeparture",required=true,value="timeDeparture")
 	private LocalTime timeDeparture;
+	@ApiModelProperty(notes = "hora de chegada",name="timeArrival",required=true,value="timeArrival")
 	private LocalTime timeArrival;
+	@ApiModelProperty(notes = "preco do voo",name="price",required=true,value="price")
 	private BigDecimal price;
+	@ApiModelProperty(notes = "operadora do voo",name="operator",required=true,value="operator")
 	private Operator operator;
 	
 	

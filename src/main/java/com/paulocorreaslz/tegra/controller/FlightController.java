@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.model.Flight;
+import com.paulocorreaslz.tegra.util.FlightComparator;
 import com.paulocorreaslz.tegra.util.Operator;
 
 import io.swagger.annotations.Api;
@@ -61,7 +62,6 @@ public class FlightController {
 	private DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-	// metodo inicial de teste de aplicação online.
 	@ApiOperation(value = "Método para verificar a resposta da aplicação", response = java.lang.String.class, tags = "verificar disponibilidade da aplicação")
 	@GetMapping("/online")
 	public String online() {
@@ -140,18 +140,22 @@ public class FlightController {
 		return listFlights;
 	}
 
-	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir e 99Planes", response = Iterable.class, tags = "listar todos os voos")
 	@SuppressWarnings("unchecked")
+	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir e 99Planes", response = Iterable.class, tags = "listar todos os voos")
 	@GetMapping("/all")
 	public List<Flight> getAllFlights() throws IOException, java.text.ParseException{
 		List<Flight> listAll = new ArrayList<Flight>();
 
 		listAll.addAll(getPlanesFlights());
 		listAll.addAll(getUberFlights());
-
+				
+		FlightComparator comparator = new FlightComparator();
+		Collections.sort(listAll, comparator);
+	
 		return listAll;
 	}
 
+    
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela 99planes", response = Iterable.class, tags = "listar voos operados pela 99planes")
 	@SuppressWarnings("unchecked")
 	@GetMapping("/planes")

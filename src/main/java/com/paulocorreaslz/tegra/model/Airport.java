@@ -3,6 +3,8 @@
  */
 package com.paulocorreaslz.tegra.model;
 
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * @author Paulo Correa <pauloyaco@gmail.com> - 2019
  *
@@ -10,8 +12,11 @@ package com.paulocorreaslz.tegra.model;
 
 public class Airport {
 	
+	@ApiModelProperty(notes = "Nome do aeroporto",name="name",required=true,value="nome")
 	private String name;
+	@ApiModelProperty(notes = "sigla do aeroporto",name="airport",required=true,value="sigla")
 	private String airport;
+	@ApiModelProperty(notes = "cidade do aeroporto",name="city",required=true,value="cidade")
 	private String city;
 	
 	public Airport(String name, String airport, String city) {
