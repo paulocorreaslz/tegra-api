@@ -7,9 +7,12 @@ package com.paulocorreaslz.tegra.controller;
 import static org.mockito.Matchers.anyString;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -73,9 +76,9 @@ public class FlightController {
 	public List<Flight> getUberFlights() throws java.text.ParseException, NumberFormatException  {
 		List<Flight> listFlights = new ArrayList<Flight>();
 		try {
-			File file = new ClassPathResource("uberair.csv").getFile();
-			Reader in = new FileReader( file );
-			CSVParser parser = new CSVParser( in, CSVFormat.DEFAULT );
+			InputStream file = new ClassPathResource("uberair.csv").getInputStream();
+			Reader in = new InputStreamReader(file);
+			CSVParser parser = new CSVParser(in, CSVFormat.DEFAULT );
 			List<CSVRecord> list = parser.getRecords();
 			int line = 0, item = 0;
 			String numFlight = null, origin = null, destination = null;
@@ -164,9 +167,9 @@ public class FlightController {
 	public List<Flight> getPlanesFlights() throws IOException{
 
 		List<Flight> listFlights = new ArrayList<>();
-		File file = new ClassPathResource("99planes.json").getFile();
+		InputStream file = new ClassPathResource("99planes.json").getInputStream();
 		JSONParser jsonParser = new JSONParser();
-		try (FileReader reader = new FileReader(file))
+		try (Reader reader = new InputStreamReader(file))
 		{
 			Object obj = jsonParser.parse(reader);
 			JSONArray flightList = (JSONArray) obj;
@@ -198,9 +201,9 @@ public class FlightController {
 	private List<Airport> loadAirports() throws IOException {
 
 		List<Airport> listAirports = new ArrayList<>();
-		File file = new ClassPathResource("aeroportos.json").getFile();
+		InputStream file = new ClassPathResource("aeroportos.json").getInputStream();
 		JSONParser jsonParser = new JSONParser();
-		try (FileReader reader = new FileReader(file))
+		try (Reader reader = new InputStreamReader(file))
 		{
 			Object obj = jsonParser.parse(reader);
 			JSONArray airportsList = (JSONArray) obj;
