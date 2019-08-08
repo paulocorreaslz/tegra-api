@@ -4,8 +4,8 @@ import java.util.Comparator;
 
 import com.paulocorreaslz.tegra.model.Flight;
 
-public class FlightComparator  implements Comparator<Flight> {
+public class FlightTimeComparator  implements Comparator<Flight> {
     public int compare(Flight flight, Flight otherFlight) {
-        return flight.getDateStart().compareTo(otherFlight.getDateStart());
+        return flight.getTimeDeparture().compareTo(otherFlight.getTimeDeparture());
     }
 }

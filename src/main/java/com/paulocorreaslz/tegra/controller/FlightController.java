@@ -38,7 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.model.Flight;
-import com.paulocorreaslz.tegra.util.FlightComparator;
+import com.paulocorreaslz.tegra.util.FlightDateComparator;
+import com.paulocorreaslz.tegra.util.FlightTimeComparator;
 import com.paulocorreaslz.tegra.util.Operator;
 
 import io.swagger.annotations.Api;
@@ -92,7 +93,7 @@ public class FlightController {
 			// 4 = horario_saida
 			// 5 = horario_chegada
 			// 6 = preco
-			
+
 			for( CSVRecord row : list ) {
 				System.out.println("Linha:"+line);
 				for( Object value : row ) {
@@ -151,14 +152,14 @@ public class FlightController {
 
 		listAll.addAll(getPlanesFlights());
 		listAll.addAll(getUberFlights());
-				
-		FlightComparator comparator = new FlightComparator();
+
+		FlightDateComparator comparator = new FlightDateComparator();
 		Collections.sort(listAll, comparator);
-	
+
 		return listAll;
 	}
 
-    
+
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela 99planes", response = Iterable.class, tags = "listar voos operados pela 99planes")
 	@SuppressWarnings("unchecked")
 	@GetMapping("/planes")
@@ -172,15 +173,16 @@ public class FlightController {
 			Object obj = jsonParser.parse(reader);
 			JSONArray flightList = (JSONArray) obj;
 
-			flightList.forEach( flitghsJSon -> { 
-					try {
-						listFlights.add(transformFlightInfo( (JSONObject) flitghsJSon ));
-					} catch (java.text.ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} 
-				}
-			);
+			flightList.forEach( 
+					flitghsJSon -> { 
+							try {
+								listFlights.add(transformFlightInfo( (JSONObject) flitghsJSon ));
+							} catch (java.text.ParseException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} 
+						}
+					);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -205,10 +207,11 @@ public class FlightController {
 			Object obj = jsonParser.parse(reader);
 			JSONArray airportsList = (JSONArray) obj;
 
-			airportsList.forEach( airportsJSon -> {
-				listAirports.add(transformAirportsInfo( (JSONObject) airportsJSon ));
-					}
-				);
+			airportsList.forEach( 
+						airportsJSon -> {
+							listAirports.add(transformAirportsInfo( (JSONObject) airportsJSon ));
+						}
+					);
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -231,7 +234,7 @@ public class FlightController {
 
 		String destinationJsonValue = (String) info.get("destino");
 		System.out.println("destino:"+destinationJsonValue);
-		
+
 		LocalDate dateStartJsonValue = LocalDate.parse((String) info.get("data_saida"), dateFormatter);
 		System.out.println("data:"+dateStartJsonValue);
 
@@ -268,7 +271,7 @@ public class FlightController {
 		Airport airport = new Airport(nomeJsonValue, aeroportoJsonValue, cidadeJsonValue);
 		return airport;	  
 	}
-	
+
 	@ApiOperation(value = "Método para buscar de voos operados pela uberAir e 99planes por origem, destino e data especificos", response = Iterable.class, tags = "buscar voos por origem, destino e data")
 	@GetMapping("/search/{origin}/{destination}/{datesearch}")
 	public List<Flight> searchFlights(@PathVariable("origin") String origin, @PathVariable("destination") String destination, @PathVariable("datesearch") String dateSearch) throws IOException, java.text.ParseException{
@@ -276,18 +279,21 @@ public class FlightController {
 		System.out.println("airport origin get: "+ origin);
 		System.out.println("airport destination get: "+ destination);
 		System.out.println("date:"+ dateSearch);
-		
+
 		LocalDate dateFlight = LocalDate.parse((String) dateSearch, dateFormatter);
-		
+
 		listGetFlights = getFlightsFromOriginDestination(origin, destination, dateFlight);
-			
+
 		return listGetFlights;
 	}
-	
+
 	private List<Flight> getFlightsFromOriginDestination(String airportOrigin, String airportDestination, LocalDate flightDate) throws IOException, java.text.ParseException{
 		List<Flight> listFlights = new ArrayList<Flight>();
 		List<Flight> listReturnFlights = new ArrayList<Flight>();
 		listFlights = getAllFlights();
+		
+		FlightTimeComparator comparator = new FlightTimeComparator();
+		Collections.sort(listFlights, comparator);
 		
 		System.out.println("looking for flights on origin: "+ airportOrigin+ " destination:"+airportDestination);
 		int found = 0;
