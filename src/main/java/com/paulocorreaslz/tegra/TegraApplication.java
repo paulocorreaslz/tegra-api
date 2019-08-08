@@ -1,8 +1,7 @@
 package com.paulocorreaslz.tegra;
 
-/*
- *
- * Criado por Paulo Correa <pauloyaco@gmail.com> - 2019
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
  *
  */
 

@@ -1,12 +1,10 @@
 package com.paulocorreaslz.tegra.controller;
-
-import static org.mockito.Matchers.anyString;
-
-/*
- *
- * Criado por Paulo Correa <pauloyaco@gmail.com> - 2019
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
  *
  */
+
+import static org.mockito.Matchers.anyString;
 
 import java.io.File;
 import java.io.FileNotFoundException;

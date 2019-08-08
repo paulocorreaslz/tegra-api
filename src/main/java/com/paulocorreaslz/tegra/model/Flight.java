@@ -1,11 +1,8 @@
 package com.paulocorreaslz.tegra.model;
-
-/*
-*
-* Criado por Paulo Correa <pauloyaco@gmail.com> - 2019
-*
-*/
-
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
+ *
+ */
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
