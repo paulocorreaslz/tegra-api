@@ -78,7 +78,7 @@ public class FlightController {
 			Reader in = new FileReader( file );
 			CSVParser parser = new CSVParser( in, CSVFormat.DEFAULT );
 			List<CSVRecord> list = parser.getRecords();
-			int line = 1, item = 0;
+			int line = 0, item = 0;
 			String numFlight = null, origin = null, destination = null;
 			LocalTime timeDeparture = null, timeArrival = null;
 			LocalDate dateStart = null;
@@ -94,8 +94,9 @@ public class FlightController {
 			// 6 = preco
 			
 			for( CSVRecord row : list ) {
+				System.out.println("Linha:"+line);
 				for( Object value : row ) {
-					if (line > 1) {
+					if (line > 0) {
 						if (item == 0) {
 							numFlight = value.toString();
 							System.out.println("voo: "+value);
@@ -125,8 +126,10 @@ public class FlightController {
 					if (item < 6) {
 						item++;
 					} else {
-						Flight flight = new Flight(numFlight, origin, destination, dateStart, timeDeparture, timeArrival, price, operator);
-						listFlights.add(flight);
+						if (line > 0) {
+							Flight flight = new Flight(numFlight, origin, destination, dateStart, timeDeparture, timeArrival, price, operator);
+							listFlights.add(flight);
+						}
 						item = 0;
 					}
 				}
