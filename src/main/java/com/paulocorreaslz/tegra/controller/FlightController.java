@@ -343,8 +343,11 @@ public class FlightController {
 	
 	public List<Flight> listRoutesFlight(List<String> route,String origin, List<Flight> listFlightsLimited, LocalDate flightDate){
 		List<Flight> listRouteFlights = new ArrayList<Flight>();
+		List<Flight> flightsFound = new ArrayList<Flight>();
+	
 		List<String> routeBackup = new ArrayList<String>();
-		int controllerRoute = 0;
+		
+		int controllerRoute = 0, controle = 0;
 		System.out.println("Tamanho da rota:"+route.size());
 		for (String part : route) {
 			System.out.println("Iteração da rota. ControllerRoute:"+controllerRoute);
@@ -354,26 +357,37 @@ public class FlightController {
 				controllerRoute++;
 				if (controllerRoute == 2) {
 						System.out.println("Inserindo na lista de rotas o voo.");
-						listRouteFlights.add(findFlightByOriginDestinarionDate(listFlightsLimited, routeBackup.get(0), routeBackup.get(1), flightDate));
+						flightsFound = findFlightByOriginDestinarionDate(listFlightsLimited, routeBackup.get(0), routeBackup.get(1), flightDate);
+						listRouteFlights.addAll(flightsFound);
 						routeBackup.clear();
 						controllerRoute = 0;
+				} else {
+					if (controle+1 < route.size()) {
+						flightsFound = findFlightByOriginDestinarionDate(listFlightsLimited, route.get(controle), route.get(controle+1), flightDate);
+						listRouteFlights.addAll(flightsFound);
+						routeBackup.clear();
+						controllerRoute = 0;	
+					}
 				}
 			}
+			controle++;
 		}
 		
 		return listRouteFlights;
 	}
 	
-	public Flight findFlightByOriginDestinarionDate(List<Flight> listFlightsLimited, String origin, String destination, LocalDate flightDate) {
+	public List<Flight> findFlightByOriginDestinarionDate(List<Flight> listFlightsLimited, String origin, String destination, LocalDate flightDate) {
+		List<Flight> flightsFound = new ArrayList<Flight>();
 		Flight flight = null;
 		for (Flight flightPromisse: listFlightsLimited) {
 			if (flightPromisse.getOrigin().equals((String) origin)
 					&& flightPromisse.getDestination().equals((String) destination ) 
 					&& flightPromisse.getDateStart().isEqual(flightDate)){
 				flight = flightPromisse;
+				flightsFound.add(flight);
 				System.out.println("Localizado o voo de findFlightByOriginDestinarionDate."+flight.toString());
 			}
 		}
-		return flight;
+		return flightsFound;
 	}
 }
