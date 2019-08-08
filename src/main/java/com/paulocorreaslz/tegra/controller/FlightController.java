@@ -41,7 +41,9 @@ import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.model.Flight;
 import com.paulocorreaslz.tegra.util.FlightDateComparator;
 import com.paulocorreaslz.tegra.util.FlightTimeComparator;
+import com.paulocorreaslz.tegra.util.Graph;
 import com.paulocorreaslz.tegra.util.Operator;
+import com.paulocorreaslz.tegra.util.FlightSearch;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,7 +65,9 @@ public class FlightController {
 	// 
 	private DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
+	
+	private Graph graphAll;
+	
 	@ApiOperation(value = "Método para verificar a resposta da aplicação", response = java.lang.String.class, tags = "verificar disponibilidade da aplicação")
 	@GetMapping("/online")
 	public String online() {
@@ -96,33 +100,33 @@ public class FlightController {
 			// 6 = preco
 
 			for( CSVRecord row : list ) {
-				System.out.println("Linha:"+line);
+				//System.out.println("Linha:"+line);
 				for( Object value : row ) {
 					if (line > 0) {
 						if (item == 0) {
 							numFlight = value.toString();
-							System.out.println("voo: "+value);
+							//System.out.println("voo: "+value);
 						} else if (item == 1) {
 							origin = value.toString();
-							System.out.println("origem: "+value);
+							//System.out.println("origem: "+value);
 						} else if (item == 2) {
 							destination = value.toString();
-							System.out.println("destino: "+value);
+							//System.out.println("destino: "+value);
 						} else if (item == 3) {
 							dateStart = LocalDate.parse((String) value, dateFormatter);
-							System.out.println("data: "+value);
+							//System.out.println("data: "+value);
 						} else if (item == 4) {
 							timeDeparture = LocalTime.parse(value.toString(), timeFormatter);
-							System.out.println("saida: "+value);
+							//System.out.println("saida: "+value);
 						} else if (item == 5) {
 							timeArrival = LocalTime.parse(value.toString(), timeFormatter);
-							System.out.println("chegada: "+value);
+							//System.out.println("chegada: "+value);
 						} else if (item == 6) {
-							System.out.println("preco: "+value);
+							//System.out.println("preco: "+value);
 							price = new BigDecimal(Double.parseDouble((String) value));
 							operator = Operator.UBERAIR;
-							System.out.println("Operator:"+operator);
-							System.out.println("----------------------------------");	
+							//System.out.println("Operator:"+operator);
+							//System.out.println("----------------------------------");	
 						}
 					}
 					if (item < 6) {
@@ -137,7 +141,7 @@ public class FlightController {
 				}
 				line++;
 			}
-
+			System.out.println("total voos Uber:"+ (line-1));	
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -149,15 +153,16 @@ public class FlightController {
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir e 99Planes", response = Iterable.class, tags = "listar todos os voos")
 	@GetMapping("/all")
 	public List<Flight> getAllFlights() throws IOException, java.text.ParseException{
-		List<Flight> listAll = new ArrayList<Flight>();
+		List<Flight> listAllFlights = new ArrayList<Flight>();
 
-		listAll.addAll(getPlanesFlights());
-		listAll.addAll(getUberFlights());
+		listAllFlights.addAll(getPlanesFlights());
+		listAllFlights.addAll(getUberFlights());
 
+		// sort by date
 		FlightDateComparator comparator = new FlightDateComparator();
-		Collections.sort(listAll, comparator);
-
-		return listAll;
+		Collections.sort(listAllFlights, comparator);
+		
+		return listAllFlights;
 	}
 
 
@@ -184,7 +189,7 @@ public class FlightController {
 							} 
 						}
 					);
-
+			System.out.println("total voos Planes:"+ flightList.size());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -207,13 +212,12 @@ public class FlightController {
 		{
 			Object obj = jsonParser.parse(reader);
 			JSONArray airportsList = (JSONArray) obj;
-
 			airportsList.forEach( 
 						airportsJSon -> {
 							listAirports.add(transformAirportsInfo( (JSONObject) airportsJSon ));
 						}
 					);
-
+			System.out.println("total de aeroportos:"+ airportsList.size());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -226,32 +230,31 @@ public class FlightController {
 
 	private Flight transformFlightInfo(JSONObject info) throws java.text.ParseException
 	{
-
 		String flightJsonValue = (String) info.get("voo");
-		System.out.println("voo:"+flightJsonValue);
+		//System.out.println("voo:"+flightJsonValue);
 
 		String originJsonValue = (String) info.get("origem");
-		System.out.println("origem:"+originJsonValue);
+		//System.out.println("origem:"+originJsonValue);
 
 		String destinationJsonValue = (String) info.get("destino");
-		System.out.println("destino:"+destinationJsonValue);
+		//System.out.println("destino:"+destinationJsonValue);
 
 		LocalDate dateStartJsonValue = LocalDate.parse((String) info.get("data_saida"), dateFormatter);
-		System.out.println("data:"+dateStartJsonValue);
+		//System.out.println("data:"+dateStartJsonValue);
 
 		LocalTime timeDepartureJsonValue = LocalTime.parse((String) info.get("saida"), timeFormatter);
-		System.out.println("saida:"+timeDepartureJsonValue);
+		//System.out.println("saida:"+timeDepartureJsonValue);
 
 		LocalTime timeArrivalJsonValue = LocalTime.parse((String) info.get("chegada"), timeFormatter);
-		System.out.println("chegada:"+timeArrivalJsonValue);
+		//System.out.println("chegada:"+timeArrivalJsonValue);
 
 		Number priceJsonValue = (Number) info.get("valor");
 		BigDecimal valorJsonValue = new BigDecimal(priceJsonValue.longValue());
-		System.out.println("valor:"+valorJsonValue);
+		//System.out.println("valor:"+valorJsonValue);
 
-		System.out.println("Operator:"+Operator.PLANES);
+		//System.out.println("Operator:"+Operator.PLANES);
 
-		System.out.println("----------------------------------");
+		//System.out.println("----------------------------------");
 		Flight flight = new Flight(flightJsonValue, originJsonValue, destinationJsonValue, dateStartJsonValue, timeDepartureJsonValue, timeArrivalJsonValue, valorJsonValue, Operator.PLANES);
 		return flight;
 	}
@@ -287,30 +290,90 @@ public class FlightController {
 
 		return listGetFlights;
 	}
+	
+	private void listGraphs(List<Flight> listFlights) {
+		System.out.println("Criando lista de graphos..");
+		Graph graphLocal = new Graph();
+		
+		for (Flight flight: listFlights) {
+			System.out.println("Adicionado trecho de graphos.. origem:"+flight.getOrigin()+" destino:"+flight.getDestination());
+			graphLocal.addEdge(flight.getOrigin(), flight.getDestination());
+		}
+		graphAll = graphLocal;
+		System.out.println("Finalizado lista de graphos..");
+	}
 
 	private List<Flight> getFlightsFromOriginDestination(String airportOrigin, String airportDestination, LocalDate flightDate) throws IOException, java.text.ParseException{
 		List<Flight> listFlights = new ArrayList<Flight>();
 		List<Flight> listReturnFlights = new ArrayList<Flight>();
+		List<Flight> listReturnFlightsRoutes = new ArrayList<Flight>();
+		
 		listFlights = getAllFlights();
 		
+		//sort by time
 		FlightTimeComparator comparator = new FlightTimeComparator();
 		Collections.sort(listFlights, comparator);
 		
 		System.out.println("looking for flights on origin: "+ airportOrigin+ " destination:"+airportDestination);
 		int found = 0;
+		FlightSearch s = new FlightSearch();
 		for (Flight flight: listFlights) {
 			if (flight.getOrigin() != null) {
-				System.out.println(flight.toString());
-				if (flight.getOrigin().equals(airportOrigin) && 
-						flight.getDestination().equals(airportDestination) &&
-						flight.getDateStart().equals(flightDate)) {
-					System.out.println("Flight found...");
-					listReturnFlights.add(flight);
-					found++;
+				if ((flight.getOrigin().equals(airportOrigin) 
+						|| flight.getDestination().equals(airportDestination)) 
+						&& flight.getDateStart().equals(flightDate)) {
+							System.out.println("Flight found...");
+							listReturnFlights.add(flight);
+							found++;
 				}
 			}
 		}
-		System.out.println("found "+ found +" flights.");
-		return listReturnFlights;
+		System.out.println("found "+ found +" flights.");		
+		
+		listGraphs(listReturnFlights);
+		s.addGraph(graphAll);
+		System.out.println("Buscar caminhos..");
+		List<String> listRoute = s.run(airportOrigin, airportDestination);
+		System.out.println("Lista processada de trechos da rota:"+listRoute.toString());
+		System.out.println("Fim de busca de graphos..");
+		
+		listReturnFlightsRoutes = listRoutesFlight(listRoute,airportOrigin,listReturnFlights,flightDate);
+		return listReturnFlightsRoutes;
+	}
+	
+	public List<Flight> listRoutesFlight(List<String> route,String origin, List<Flight> listFlightsLimited, LocalDate flightDate){
+		List<Flight> listRouteFlights = new ArrayList<Flight>();
+		List<String> routeBackup = new ArrayList<String>();
+		int controllerRoute = 0;
+		System.out.println("Tamanho da rota:"+route.size());
+		for (String part : route) {
+			System.out.println("Iteração da rota. ControllerRoute:"+controllerRoute);
+			if (controllerRoute < 2) {
+				System.out.println("Inserindo em list de rota backup o valor:"+part);
+				routeBackup.add(part);
+				controllerRoute++;
+				if (controllerRoute == 2) {
+						System.out.println("Inserindo na lista de rotas o voo.");
+						listRouteFlights.add(findFlightByOriginDestinarionDate(listFlightsLimited, routeBackup.get(0), routeBackup.get(1), flightDate));
+						routeBackup.clear();
+						controllerRoute = 0;
+				}
+			}
+		}
+		
+		return listRouteFlights;
+	}
+	
+	public Flight findFlightByOriginDestinarionDate(List<Flight> listFlightsLimited, String origin, String destination, LocalDate flightDate) {
+		Flight flight = null;
+		for (Flight flightPromisse: listFlightsLimited) {
+			if (flightPromisse.getOrigin().equals((String) origin)
+					&& flightPromisse.getDestination().equals((String) destination ) 
+					&& flightPromisse.getDateStart().isEqual(flightDate)){
+				flight = flightPromisse;
+				System.out.println("Localizado o voo de findFlightByOriginDestinarionDate."+flight.toString());
+			}
+		}
+		return flight;
 	}
 }
