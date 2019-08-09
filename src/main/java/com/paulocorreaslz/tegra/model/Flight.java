@@ -6,7 +6,11 @@ package com.paulocorreaslz.tegra.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.format.datetime.joda.LocalDateTimeParser;
 
 import com.paulocorreaslz.tegra.util.Operator;
 
@@ -34,6 +38,10 @@ public class Flight implements Serializable {
 	private BigDecimal price;
 	@ApiModelProperty(notes = "operadora do voo",name="operator",required=true,value="operator")
 	private Operator operator;
+	
+	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'");
+	private LocalDateTime dateTimeDeparture;
+	private LocalDateTime dateTimeArrival;
 	
 	
 	public Flight (String numflight, String origin, String destination, LocalDate dateStart, LocalTime timeDeparture, LocalTime timeArrival, BigDecimal price, Operator operator) {
@@ -115,4 +123,14 @@ public class Flight implements Serializable {
 		return "Flight:["+this.numFlight+","+this.origin+","+this.destination+","+this.dateStart.toString()+","+
 				this.timeDeparture.toString()+","+this.timeArrival.toString()+","+this.price+","+this.operator+"]";
 		}
+	
+	public String getDateTimeDeparture() {
+		this.dateTimeDeparture = LocalDateTime.of(this.getDateStart(), this.getTimeDeparture());
+		return dateTimeDeparture.format(dateFormatter).toString();
+	}
+
+	public String getDateTimeArrival() {
+		this.dateTimeArrival = LocalDateTime.of(this.getDateStart(), this.getTimeArrival());
+		return dateTimeArrival.format(dateFormatter).toString();
+	}
 }

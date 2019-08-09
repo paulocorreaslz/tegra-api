@@ -4,49 +4,20 @@ package com.paulocorreaslz.tegra.controller;
  *
  */
 
-import static org.mockito.Matchers.anyString;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.paulocorreaslz.tegra.model.Airport;
-import com.paulocorreaslz.tegra.model.Flight;
-import com.paulocorreaslz.tegra.util.FlightDateComparator;
-import com.paulocorreaslz.tegra.util.FlightTimeComparator;
-import com.paulocorreaslz.tegra.util.Graph;
-import com.paulocorreaslz.tegra.util.Operator;
-import com.paulocorreaslz.tegra.util.FlightSearch;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -55,6 +26,24 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.paulocorreaslz.tegra.model.Airport;
+import com.paulocorreaslz.tegra.model.Flight;
+import com.paulocorreaslz.tegra.model.FlightResponse;
+import com.paulocorreaslz.tegra.util.FlightDateComparator;
+import com.paulocorreaslz.tegra.util.FlightSearch;
+import com.paulocorreaslz.tegra.util.FlightTimeComparator;
+import com.paulocorreaslz.tegra.util.Graph;
+import com.paulocorreaslz.tegra.util.Operator;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(origins = {"http://localhost","*"})
 @RestController
@@ -203,7 +192,7 @@ public class FlightController {
 	@ApiOperation(value = "Método para buscar aeroportos disponiveis", response = Iterable.class, tags = "listar aeroportos")
 	@SuppressWarnings("unchecked")
 	@GetMapping("/airports")
-	private List<Airport> loadAirports() throws IOException {
+	public List<Airport> loadAirports() throws IOException {
 
 		List<Airport> listAirports = new ArrayList<>();
 		InputStream file = new ClassPathResource("aeroportos.json").getInputStream();
@@ -278,17 +267,22 @@ public class FlightController {
 
 	@ApiOperation(value = "Método para buscar de voos operados pela uberAir e 99planes por origem, destino e data especificos", response = Iterable.class, tags = "buscar voos por origem, destino e data")
 	@GetMapping("/search/{origin}/{destination}/{datesearch}")
-	public List<Flight> searchFlights(@PathVariable("origin") String origin, @PathVariable("destination") String destination, @PathVariable("datesearch") String dateSearch) throws IOException, java.text.ParseException{
+	public FlightResponse searchFlights(@PathVariable("origin") String origin, @PathVariable("destination") String destination, @PathVariable("datesearch") String dateSearch) throws IOException, java.text.ParseException{
+		
 		List<Flight> listGetFlights = new ArrayList<Flight>();
 		System.out.println("airport origin get: "+ origin);
 		System.out.println("airport destination get: "+ destination);
 		System.out.println("date:"+ dateSearch);
 
 		LocalDate dateFlight = LocalDate.parse((String) dateSearch, dateFormatter);
-
+		
 		listGetFlights = getFlightsFromOriginDestination(origin, destination, dateFlight);
 
-		return listGetFlights;
+		LocalDateTime dateTimeLeave = LocalDateTime.of(dateFlight, listGetFlights.get(0).getTimeDeparture()); 
+		LocalDateTime dateTimeArrival = LocalDateTime.of(dateFlight, listGetFlights.get(listGetFlights.size()-1).getTimeArrival());
+		FlightResponse response = new FlightResponse(origin, destination, dateTimeLeave, dateTimeArrival, listGetFlights);
+		
+		return response;
 	}
 	
 	private void listGraphs(List<Flight> listFlights) {
@@ -341,42 +335,26 @@ public class FlightController {
 		return listReturnFlightsRoutes;
 	}
 	
-	public List<Flight> listRoutesFlight(List<String> route,String origin, List<Flight> listFlightsLimited, LocalDate flightDate){
+	private List<Flight> listRoutesFlight(List<String> route,String origin, List<Flight> listFlightsLimited, LocalDate flightDate){
 		List<Flight> listRouteFlights = new ArrayList<Flight>();
 		List<Flight> flightsFound = new ArrayList<Flight>();
 	
-		List<String> routeBackup = new ArrayList<String>();
-		
-		int controllerRoute = 0, controle = 0;
+		int controle = 0;
 		System.out.println("Tamanho da rota:"+route.size());
 		for (String part : route) {
-			System.out.println("Iteração da rota. ControllerRoute:"+controllerRoute);
-			if (controllerRoute < 2) {
-				System.out.println("Inserindo em list de rota backup o valor:"+part);
-				routeBackup.add(part);
-				controllerRoute++;
-				if (controllerRoute == 2) {
-						System.out.println("Inserindo na lista de rotas o voo.");
-						flightsFound = findFlightByOriginDestinarionDate(listFlightsLimited, routeBackup.get(0), routeBackup.get(1), flightDate);
-						listRouteFlights.addAll(flightsFound);
-						routeBackup.clear();
-						controllerRoute = 0;
-				} else {
-					if (controle+1 < route.size()) {
-						flightsFound = findFlightByOriginDestinarionDate(listFlightsLimited, route.get(controle), route.get(controle+1), flightDate);
-						listRouteFlights.addAll(flightsFound);
-						routeBackup.clear();
-						controllerRoute = 0;	
-					}
-				}
+			System.out.println("Iteração da rota. ControllerRoute:"+controle);
+			System.out.println("Inserindo em list de rota backup o valor:"+part);
+			if (controle+1 < route.size()) {
+				flightsFound = findFlightByOriginDestinarionDate(listFlightsLimited, route.get(controle), route.get(controle+1), flightDate);
+				listRouteFlights.addAll(flightsFound);
 			}
 			controle++;
 		}
-		
+		System.out.println("Total de voos apos busca de rotas:"+listRouteFlights.size());
 		return listRouteFlights;
 	}
 	
-	public List<Flight> findFlightByOriginDestinarionDate(List<Flight> listFlightsLimited, String origin, String destination, LocalDate flightDate) {
+	private List<Flight> findFlightByOriginDestinarionDate(List<Flight> listFlightsLimited, String origin, String destination, LocalDate flightDate) {
 		List<Flight> flightsFound = new ArrayList<Flight>();
 		Flight flight = null;
 		for (Flight flightPromisse: listFlightsLimited) {
