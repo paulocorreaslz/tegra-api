@@ -2,6 +2,7 @@
 /home/paulo/eclipse-workspace/tegra-api/src/main/java/com/paulocorreaslz/tegra/util/Operator.java
 /home/paulo/eclipse-workspace/tegra-api/src/main/java/com/paulocorreaslz/tegra/TegraApplication.java
 /home/paulo/eclipse-workspace/tegra-api/src/main/java/com/paulocorreaslz/tegra/util/Graph.java
+/home/paulo/eclipse-workspace/tegra-api/src/main/java/com/paulocorreaslz/tegra/model/FlightResponse.java
 /home/paulo/eclipse-workspace/tegra-api/src/main/java/com/paulocorreaslz/tegra/util/FlightDateComparator.java
 /home/paulo/eclipse-workspace/tegra-api/src/main/java/com/paulocorreaslz/tegra/util/FlightTimeComparator.java
 /home/paulo/eclipse-workspace/tegra-api/src/main/java/com/paulocorreaslz/tegra/configuration/Swagger2UiConfiguration.java
