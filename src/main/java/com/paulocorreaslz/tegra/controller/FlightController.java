@@ -41,7 +41,7 @@ import com.paulocorreaslz.tegra.util.FlightSearch;
 import com.paulocorreaslz.tegra.util.FlightTimeComparator;
 import com.paulocorreaslz.tegra.util.Graph;
 import com.paulocorreaslz.tegra.util.Operator;
-
+import static java.time.temporal.ChronoUnit.MINUTES;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -270,6 +270,10 @@ public class FlightController {
 	public FlightResponse searchFlights(@PathVariable("origin") String origin, @PathVariable("destination") String destination, @PathVariable("datesearch") String dateSearch) throws IOException, java.text.ParseException{
 		
 		List<Flight> listGetFlights = new ArrayList<Flight>();
+		List<Flight> listGetFlightsMidle = new ArrayList<Flight>();
+		List<Flight> listGetFlightsDirect = new ArrayList<Flight>();
+		List<Flight> listGetFlightsFull = new ArrayList<Flight>();
+		
 		System.out.println("airport origin get: "+ origin);
 		System.out.println("airport destination get: "+ destination);
 		System.out.println("date:"+ dateSearch);
@@ -280,11 +284,45 @@ public class FlightController {
 
 		LocalDateTime dateTimeLeave = LocalDateTime.of(dateFlight, listGetFlights.get(0).getTimeDeparture()); 
 		LocalDateTime dateTimeArrival = LocalDateTime.of(dateFlight, listGetFlights.get(listGetFlights.size()-1).getTimeArrival());
-		FlightResponse response = new FlightResponse(origin, destination, dateTimeLeave, dateTimeArrival, listGetFlights);
+		
+		listGetFlightsMidle = selectFlightMidle(origin, destination, listGetFlights);
+		listGetFlightsDirect = selectFlightDirect(origin, destination, listGetFlightsDirect);
+		listGetFlightsFull.addAll(listGetFlightsDirect);
+		listGetFlightsFull.addAll(listGetFlightsMidle);
+		
+		FlightResponse response = new FlightResponse(origin, destination, dateTimeLeave, dateTimeArrival, listGetFlightsFull);
 		
 		return response;
 	}
 	
+	private List<Flight> selectFlightMidle(String origin, String destination, List<Flight> listGetFlights) {
+		List<Flight> newListFlightMidle = new ArrayList<Flight>();
+		int control = 0;
+		for(Flight flight:listGetFlights) {
+			if (!flight.getOrigin().equals(origin) || !flight.getDestination().equals(destination)) {
+				if (control+1 == listGetFlights.size()) {
+					newListFlightMidle.add(flight);
+				} else {
+					if (MINUTES.between(listGetFlights.get(control).getTimeArrival(), listGetFlights.get(control+1).getTimeDeparture()) < 720) {
+						newListFlightMidle.add(flight);
+					}
+				}
+			}
+			control++;
+		}
+		return newListFlightMidle;
+	}
+	
+	private List<Flight> selectFlightDirect(String origin, String destination, List<Flight> listGetFlights) {
+		List<Flight> newListFlightDirect = new ArrayList<Flight>();
+		for(Flight flight:listGetFlights) {
+			if (flight.getOrigin().equals(origin) || flight.getDestination().equals(destination)) {
+				newListFlightDirect.add(flight);
+			}
+		}
+		return newListFlightDirect;
+	}
+
 	private void listGraphs(List<Flight> listFlights) {
 		System.out.println("Criando lista de graphos..");
 		Graph graphLocal = new Graph();
