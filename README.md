@@ -34,4 +34,6 @@ Urls disponíveis:
 - Para consultar um voo pela origem, destino e data a urel segue o padrao a seguir "http://localhost:9090/api/search/{ORIGEM}/{DESTINO}/{DATA}", onde no lugar de {ORIGEM} deve ser informado as 3 Letras do aeroporto de origem, exemplo: PLU. No lugar de {DESTINO} deve ser informado as 3 letras do aeroporto de destino, exemplo: VCP e no lugar de {DATA} deve ser informada a data no padrao ANO-MES-DIA, exemplo 2019-02-12. Exemplo de url para consultar: "http://localhost:9090/api/search/PLU/FLN/2019-02-11"
   
 
+Docker-Compose (docker)
+- dentro do diretório do projeto utilize o comando "docker-compose up -d"
 
