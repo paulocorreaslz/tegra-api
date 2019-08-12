@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.format.datetime.joda.LocalTimeParser;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,7 +54,7 @@ import io.swagger.annotations.ApiOperation;
 public class FlightController {
 
 	// 
-	private DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+	//private DateTimeFormatter timeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	
 	private Graph graphAll;
@@ -60,6 +62,8 @@ public class FlightController {
 	@ApiOperation(value = "Método para verificar a resposta da aplicação", response = java.lang.String.class, tags = "verificar disponibilidade da aplicação")
 	@GetMapping("/online")
 	public String online() {
+		ZonedDateTime now = ZonedDateTime.now();
+		System.out.println(now.toString());
 		return "online";
 	}
 
@@ -105,10 +109,10 @@ public class FlightController {
 							dateStart = LocalDate.parse((String) value, dateFormatter);
 							//System.out.println("data: "+value);
 						} else if (item == 4) {
-							timeDeparture = LocalTime.parse(value.toString(), timeFormatter);
+							timeDeparture = LocalTime.parse(value.toString(), DateTimeFormatter.ISO_TIME);
 							//System.out.println("saida: "+value);
 						} else if (item == 5) {
-							timeArrival = LocalTime.parse(value.toString(), timeFormatter);
+							timeArrival = LocalTime.parse(value.toString(), DateTimeFormatter.ISO_TIME);
 							//System.out.println("chegada: "+value);
 						} else if (item == 6) {
 							//System.out.println("preco: "+value);
@@ -228,13 +232,13 @@ public class FlightController {
 		String destinationJsonValue = (String) info.get("destino");
 		//System.out.println("destino:"+destinationJsonValue);
 
-		LocalDate dateStartJsonValue = LocalDate.parse((String) info.get("data_saida"), dateFormatter);
+		LocalDate dateStartJsonValue = LocalDate.parse(info.get("data_saida").toString(), dateFormatter);
 		//System.out.println("data:"+dateStartJsonValue);
 
-		LocalTime timeDepartureJsonValue = LocalTime.parse((String) info.get("saida"), timeFormatter);
+		LocalTime timeDepartureJsonValue = LocalTime.parse(info.get("saida").toString(), DateTimeFormatter.ISO_TIME);
 		//System.out.println("saida:"+timeDepartureJsonValue);
 
-		LocalTime timeArrivalJsonValue = LocalTime.parse((String) info.get("chegada"), timeFormatter);
+		LocalTime timeArrivalJsonValue = LocalTime.parse(info.get("chegada").toString(),  DateTimeFormatter.ISO_TIME);
 		//System.out.println("chegada:"+timeArrivalJsonValue);
 
 		Number priceJsonValue = (Number) info.get("valor");
