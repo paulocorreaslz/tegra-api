@@ -13,10 +13,10 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class FlightResponse implements Serializable {
 	
-	@ApiModelProperty(notes = "Origem do voo",name="origin",required=true,value="origin")
-	private String origin;
-	@ApiModelProperty(notes = "destination do voo",name="destination",required=true,value="destination")
-	private String destination;
+	@ApiModelProperty(notes = "Origem do voo",name="airportOrigin",required=true,value="airportOrigin")
+	private Airport airportOrigin;
+	@ApiModelProperty(notes = "destination do voo",name="airportDestination",required=true,value="airportDestination")
+	private Airport airportDestination;
 	@ApiModelProperty(notes = "Data de departure do voo",name="departure",required=true,value="departure")
 	private LocalDateTime departure;
 	@ApiModelProperty(notes = "Data de arrival do voo",name="arrival",required=true,value="arrival")
@@ -26,28 +26,28 @@ public class FlightResponse implements Serializable {
 	
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'");
 	
-	public FlightResponse(String origin, String destination, LocalDateTime departure, LocalDateTime arrival, List<Flight> scales) {
-		this.origin = origin;
-		this.destination = destination;
+	public FlightResponse(Airport origin, Airport destination, LocalDateTime departure, LocalDateTime arrival, List<Flight> scales) {
+		this.airportOrigin = origin;
+		this.airportDestination = destination;
 		this.departure = departure;
 		this.arrival = arrival;
 		this.scales = scales;
 	}
 
-	public String getOrigin() {
-		return origin;
+	public Airport getOrigin() {
+		return airportOrigin;
 	}
 
-	public void setOrigin(String origin) {
-		this.origin = origin;
+	public void setOrigin(Airport origin) {
+		this.airportOrigin = origin;
 	}
 
-	public String getDestination() {
-		return destination;
+	public Airport getDestination() {
+		return airportDestination;
 	}
 
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public void setDestination(Airport destination) {
+		this.airportDestination = destination;
 	}
 
 	public String getDeparture() {

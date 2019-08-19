@@ -294,9 +294,21 @@ public class FlightController {
 		listGetFlightsFull.addAll(listGetFlightsDirect);
 		listGetFlightsFull.addAll(listGetFlightsMidle);
 		
-		FlightResponse response = new FlightResponse(origin, destination, dateTimeLeave, dateTimeArrival, listGetFlightsFull);
+		FlightResponse response = new FlightResponse(findAirportByInitials(origin), findAirportByInitials(destination), dateTimeLeave, dateTimeArrival, listGetFlightsFull);
 		
 		return response;
+	}
+	
+	private Airport findAirportByInitials(String initials) throws IOException {
+		Airport airportReturn = null;
+		List<Airport> listAirports = new ArrayList<Airport>();
+		listAirports = loadAirports();
+		for(Airport airport:listAirports) {
+			if (airport.getAirport().equals((String) initials)) {
+				airportReturn = airport;
+			}
+		}
+		return airportReturn;
 	}
 	
 	private List<Flight> selectFlightMidle(String origin, String destination, List<Flight> listGetFlights) {
