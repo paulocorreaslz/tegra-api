@@ -21,7 +21,7 @@ public class FlightResponse implements Serializable {
 	private LocalDateTime departure;
 	@ApiModelProperty(notes = "Data de arrival do voo",name="arrival",required=true,value="arrival")
 	private LocalDateTime arrival;
-	@ApiModelProperty(notes = "Trechos do voo",name="scales",required=true,value="scales")
+	@ApiModelProperty(notes = "Trechos de voo",name="scales",required=true,value="scales")
 	private List<Flight> scales;
 	
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSS'Z'");

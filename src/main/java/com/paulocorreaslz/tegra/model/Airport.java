@@ -3,6 +3,8 @@
  */
 package com.paulocorreaslz.tegra.model;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -10,7 +12,7 @@ import io.swagger.annotations.ApiModelProperty;
  *
  */
 
-public class Airport {
+public class Airport implements Serializable {
 	
 	@ApiModelProperty(notes = "Nome do aeroporto",name="name",required=true,value="nome")
 	private String name;
