@@ -11,4 +11,5 @@ public interface AirportService {
 
     ResponseEntity<GenericResponse<List<Airport>>> findAll();
 
+    Airport findAirportByInitials(String initials);
 }

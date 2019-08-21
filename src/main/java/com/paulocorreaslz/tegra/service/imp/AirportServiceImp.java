@@ -28,6 +28,19 @@ public class AirportServiceImp implements AirportService {
         }
 
         response.setData(airports);
-        return ResponseEntity.ok(response);	}
+        return ResponseEntity.ok(response);	
+     }
 
+	@Override
+	public Airport findAirportByInitials(String initials) {
+		Airport response = null;
+		List<Airport> airports = this.airportRepository.findAll();
+
+		for(Airport airport:airports) {
+			if (airport.getAirport().equals((String) initials)) {
+		        response = airport;
+			}
+		}
+        return response;
+    }
 }

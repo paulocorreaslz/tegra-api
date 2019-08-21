@@ -14,7 +14,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.repository.AirportRepository;
@@ -22,6 +21,7 @@ import com.paulocorreaslz.tegra.repository.AirportRepository;
 @Repository
 public class AirportRepositoryImp implements AirportRepository {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Airport> findAll() {
 		List<Airport> listAirports = new ArrayList<>();
@@ -54,7 +54,7 @@ public class AirportRepositoryImp implements AirportRepository {
 	}
 
 
-	public Airport load(JSONObject info)
+	private Airport load(JSONObject info)
 	{
 
 		String nomeJsonValue = (String) info.get("nome");
@@ -71,15 +71,4 @@ public class AirportRepositoryImp implements AirportRepository {
 		return airport;	  
 	}
 	
-	public Airport findAirportByInitials(String initials) {
-		Airport airportReturn = null;
-		List<Airport> listAirports = new ArrayList<Airport>();
-		listAirports = this.findAll();
-		for(Airport airport:listAirports) {
-			if (airport.getAirport().equals((String) initials)) {
-				airportReturn = airport;
-			}
-		}
-		return airportReturn;
-	}
 }

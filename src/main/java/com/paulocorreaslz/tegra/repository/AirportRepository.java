@@ -10,7 +10,4 @@ public interface AirportRepository {
 
 	List<Airport> findAll();
 
-	Airport load(JSONObject info);
-	
-	Airport findAirportByInitials(String initials);
 }
