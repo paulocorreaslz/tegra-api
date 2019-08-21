@@ -10,12 +10,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.paulocorreaslz.tegra.aux.FlightTimeComparator;
 import com.paulocorreaslz.tegra.model.Flight;
 import com.paulocorreaslz.tegra.model.FlightResponse;
 import com.paulocorreaslz.tegra.repository.FlightRepository;
+import com.paulocorreaslz.tegra.response.GenericResponse;
 import com.paulocorreaslz.tegra.service.AirportService;
 import com.paulocorreaslz.tegra.service.FlightService;
 import com.paulocorreaslz.tegra.util.FlightSearch;
@@ -27,6 +29,7 @@ public class FlightServiceImp implements FlightService {
 	@Autowired
 	private AirportService airportService;
 	
+	@Autowired
 	private FlightRepository flightRepository;
 
 	private Graph graphAll;
@@ -34,7 +37,9 @@ public class FlightServiceImp implements FlightService {
 	private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 	@Override
-	public FlightResponse findbyOriginDestinatinAndDate(String origin, String destination, String dateSearch) {
+	public ResponseEntity<GenericResponse<FlightResponse>> findbyOriginDestinatinAndDate(String origin, String destination, String dateSearch) {
+		GenericResponse<FlightResponse> response = new GenericResponse<>();
+
 		List<Flight> listGetFlights = new ArrayList<Flight>();
 		List<Flight> listGetFlightsMidle = new ArrayList<Flight>();
 		List<Flight> listGetFlightsDirect = new ArrayList<Flight>();
@@ -56,11 +61,18 @@ public class FlightServiceImp implements FlightService {
 		listGetFlightsFull.addAll(listGetFlightsDirect);
 		listGetFlightsFull.addAll(listGetFlightsMidle);
 		
-		FlightResponse response = new FlightResponse(airportService.findAirportByInitials(origin), airportService.findAirportByInitials(destination), dateTimeLeave, dateTimeArrival, listGetFlightsFull);
+		FlightResponse flightResponse = new FlightResponse(airportService.findAirportByInitials(origin), airportService.findAirportByInitials(destination), dateTimeLeave, dateTimeArrival, listGetFlightsFull);
 		
-		return response;
-	}
+		response.setData(flightResponse);
+		
+		if (flightResponse.getScales().isEmpty()) {
+            response.getErrors().add("Nenhum trecho encontrado.");
+            return ResponseEntity.badRequest().body(response);
+        }
 
+        response.setData(flightResponse);
+        return ResponseEntity.ok(response);	
+	}
 	
 	public List<Flight> selectFlightMidle(String origin, String destination, List<Flight> listGetFlights) {
 		List<Flight> newListFlightMidle = new ArrayList<Flight>();
@@ -68,9 +80,7 @@ public class FlightServiceImp implements FlightService {
 		for(Flight flight:listGetFlights) {
 			if (!flight.getOrigin().equals(origin) || !flight.getDestination().equals(destination)) {
 				if (control+1 == listGetFlights.size()) {
-					if (MINUTES.between(listGetFlights.get(control).getTimeArrival(), listGetFlights.get(control+1).getTimeDeparture()) < 720) {
 						newListFlightMidle.add(flight);
-					}
 				} else {
 					if (MINUTES.between(listGetFlights.get(control).getTimeArrival(), listGetFlights.get(control+1).getTimeDeparture()) < 720) {
 						newListFlightMidle.add(flight);

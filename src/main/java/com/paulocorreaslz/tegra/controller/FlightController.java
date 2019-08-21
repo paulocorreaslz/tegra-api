@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.paulocorreaslz.tegra.model.Flight;
 import com.paulocorreaslz.tegra.model.FlightResponse;
+import com.paulocorreaslz.tegra.response.GenericResponse;
+import com.paulocorreaslz.tegra.service.imp.FlightServiceImp;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +30,8 @@ import io.swagger.annotations.ApiOperation;
 @Api(value = "FlightController", description = "REST APIs for search flights and airports!")
 public class FlightController {
 
+	@Autowired
+	private FlightServiceImp flightServiceImp;
 	
 	@ApiOperation(value = "Método para verificar a resposta da aplicação", response = java.lang.String.class, tags = "verificar disponibilidade da aplicação")
 	@GetMapping("/online")
@@ -57,8 +63,8 @@ public class FlightController {
 
 	@ApiOperation(value = "Método para buscar de voos operados pela uberAir e 99planes por origem, destino e data especificos", response = Iterable.class, tags = "buscar voos por origem, destino e data")
 	@GetMapping("/search/{origin}/{destination}/{datesearch}")
-	public FlightResponse searchFlights(@PathVariable("origin") String origin, @PathVariable("destination") String destination, @PathVariable("datesearch") String dateSearch) throws IOException, java.text.ParseException{
-		return null;
+	public ResponseEntity<GenericResponse<FlightResponse>> searchFlights(@PathVariable("origin") String origin, @PathVariable("destination") String destination, @PathVariable("datesearch") String dateSearch) throws IOException, java.text.ParseException{
+		return flightServiceImp.findbyOriginDestinatinAndDate(origin, destination, dateSearch);
 	}
 	
 }
