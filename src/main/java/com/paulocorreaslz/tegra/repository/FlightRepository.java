@@ -1,15 +1,14 @@
 package com.paulocorreaslz.tegra.repository;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import org.json.simple.JSONObject;
-
 import com.paulocorreaslz.tegra.model.Flight;
-
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
+ *
+ */
 public interface FlightRepository {
 
-	
 	List<Flight> findAll();
 	
 	List<Flight> loadUber();

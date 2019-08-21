@@ -4,15 +4,21 @@
 package com.paulocorreaslz.tegra.model;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
-
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
+ *
+ */
 public class FlightResponse implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "Origem do voo",name="airportOrigin",required=true,value="airportOrigin")
 	private Airport airportOrigin;
 	@ApiModelProperty(notes = "destination do voo",name="airportDestination",required=true,value="airportDestination")

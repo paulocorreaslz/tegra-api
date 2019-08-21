@@ -1,6 +1,3 @@
-/**
- * Criado por Paulo Correa <pauloyaco@gmail.com> 2019
- */
 package com.paulocorreaslz.tegra.model;
 
 import java.io.Serializable;

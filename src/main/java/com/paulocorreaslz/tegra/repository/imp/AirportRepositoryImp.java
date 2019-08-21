@@ -17,7 +17,10 @@ import org.springframework.stereotype.Repository;
 
 import com.paulocorreaslz.tegra.model.Airport;
 import com.paulocorreaslz.tegra.repository.AirportRepository;
-
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
+ *
+ */
 @Repository
 public class AirportRepositoryImp implements AirportRepository {
 
@@ -29,7 +32,6 @@ public class AirportRepositoryImp implements AirportRepository {
 		try {
 			file = new ClassPathResource("aeroportos.json").getInputStream();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		JSONParser jsonParser = new JSONParser();
@@ -56,17 +58,9 @@ public class AirportRepositoryImp implements AirportRepository {
 
 	private Airport load(JSONObject info)
 	{
-
 		String nomeJsonValue = (String) info.get("nome");
-		System.out.println("Nome:"+nomeJsonValue);
-
 		String aeroportoJsonValue = (String) info.get("aeroporto");
-		System.out.println("Aeroporto:"+aeroportoJsonValue);
-
 		String cidadeJsonValue = (String) info.get("cidade");
-		System.out.println("Cidade:"+cidadeJsonValue);
-		System.out.println("----------------------------------");
-
 		Airport airport = new Airport(nomeJsonValue, aeroportoJsonValue, cidadeJsonValue);
 		return airport;	  
 	}

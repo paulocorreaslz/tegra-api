@@ -22,7 +22,10 @@ import com.paulocorreaslz.tegra.service.AirportService;
 import com.paulocorreaslz.tegra.service.FlightService;
 import com.paulocorreaslz.tegra.util.FlightSearch;
 import com.paulocorreaslz.tegra.util.Graph;
-
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
+ *
+ */
 @Service
 public class FlightServiceImp implements FlightService {
 
@@ -38,31 +41,28 @@ public class FlightServiceImp implements FlightService {
 
 	@Override
 	public ResponseEntity<GenericResponse<FlightResponse>> findbyOriginDestinatinAndDate(String origin, String destination, String dateSearch) {
-		GenericResponse<FlightResponse> response = new GenericResponse<>();
 
 		List<Flight> listGetFlights = new ArrayList<Flight>();
 		List<Flight> listGetFlightsMidle = new ArrayList<Flight>();
 		List<Flight> listGetFlightsDirect = new ArrayList<Flight>();
 		List<Flight> listGetFlightsFull = new ArrayList<Flight>();
 		
-		System.out.println("airport origin get: "+ origin);
-		System.out.println("airport destination get: "+ destination);
-		System.out.println("date:"+ dateSearch);
-
 		LocalDate dateFlight = LocalDate.parse((String) dateSearch, dateFormatter);
 		
-		listGetFlights = getFlightsFromOriginDestination(origin, destination, dateFlight);
+		listGetFlights = this.getFlightsFromOriginDestination(origin, destination, dateFlight);
 
 		LocalDateTime dateTimeLeave = LocalDateTime.of(dateFlight, listGetFlights.get(0).getTimeDeparture()); 
 		LocalDateTime dateTimeArrival = LocalDateTime.of(dateFlight, listGetFlights.get(listGetFlights.size()-1).getTimeArrival());
 		
 		listGetFlightsMidle = selectFlightMidle(origin, destination, listGetFlights);
 		listGetFlightsDirect = selectFlightDirect(origin, destination, listGetFlightsDirect);
+		
 		listGetFlightsFull.addAll(listGetFlightsDirect);
 		listGetFlightsFull.addAll(listGetFlightsMidle);
 		
 		FlightResponse flightResponse = new FlightResponse(airportService.findAirportByInitials(origin), airportService.findAirportByInitials(destination), dateTimeLeave, dateTimeArrival, listGetFlightsFull);
 		
+		GenericResponse<FlightResponse> response = new GenericResponse<>();
 		response.setData(flightResponse);
 		
 		if (flightResponse.getScales().isEmpty()) {
@@ -72,6 +72,14 @@ public class FlightServiceImp implements FlightService {
 
         response.setData(flightResponse);
         return ResponseEntity.ok(response);	
+	}
+	
+	public List<Flight> findUber(){
+		return flightRepository.loadUber();
+	}
+
+	public List<Flight> findPlanes(){
+		return flightRepository.loadPlanes();
 	}
 	
 	public List<Flight> selectFlightMidle(String origin, String destination, List<Flight> listGetFlights) {
@@ -103,15 +111,12 @@ public class FlightServiceImp implements FlightService {
 	}
 
 	private void listGraphs(List<Flight> listFlights) {
-		System.out.println("Criando lista de graphos..");
 		Graph graphLocal = new Graph();
 		
 		for (Flight flight: listFlights) {
-			System.out.println("Adicionado trecho de graphos.. origem:"+flight.getOrigin()+" destino:"+flight.getDestination());
 			graphLocal.addEdge(flight.getOrigin(), flight.getDestination());
 		}
 		graphAll = graphLocal;
-		System.out.println("Finalizado lista de graphos..");
 	}
 
 	public List<Flight> getFlightsFromOriginDestination(String airportOrigin, String airportDestination, LocalDate flightDate){
@@ -125,7 +130,6 @@ public class FlightServiceImp implements FlightService {
 		FlightTimeComparator comparator = new FlightTimeComparator();
 		Collections.sort(listFlights, comparator);
 		
-		System.out.println("looking for flights on origin: "+ airportOrigin+ " destination:"+airportDestination);
 		int found = 0;
 		FlightSearch flightSearch = new FlightSearch();
 		for (Flight flight: listFlights) {
@@ -139,15 +143,11 @@ public class FlightServiceImp implements FlightService {
 				}
 			}
 		}
-		System.out.println("found "+ found +" flights.");		
 		
 		listGraphs(listReturnFlights);
 		flightSearch.addGraph(graphAll);
-		System.out.println("Buscar caminhos..");
 		List<String> listRoute = flightSearch.run(airportOrigin, airportDestination);
-		System.out.println("Lista processada de trechos da rota:"+listRoute.toString());
-		System.out.println("Fim de busca de graphos..");
-		
+	
 		listReturnFlightsRoutes = listRoutesFlight(listRoute,airportOrigin,listReturnFlights,flightDate);
 		return listReturnFlightsRoutes;
 	}
@@ -159,15 +159,12 @@ public class FlightServiceImp implements FlightService {
 		int controle = 0;
 		System.out.println("Tamanho da rota:"+route.size());
 		for (String part : route) {
-			System.out.println("Iteração da rota. ControllerRoute:"+controle);
-			System.out.println("Inserindo em list de rota backup o valor:"+part);
 			if (controle+1 < route.size()) {
 				flightsFound = findFlightByOriginDestinarionDate(listFlightsLimited, route.get(controle), route.get(controle+1), flightDate);
 				listRouteFlights.addAll(flightsFound);
 			}
 			controle++;
 		}
-		System.out.println("Total de voos apos busca de rotas:"+listRouteFlights.size());
 		return listRouteFlights;
 	}
 	
@@ -180,10 +177,26 @@ public class FlightServiceImp implements FlightService {
 					&& flightPromisse.getDateStart().isEqual(flightDate)){
 				flight = flightPromisse;
 				flightsFound.add(flight);
-				System.out.println("Localizado o voo de findFlightByOriginDestinarionDate."+flight.toString());
 			}
 		}
 		return flightsFound;
+	}
+
+	@Override
+	public ResponseEntity<GenericResponse<List<Flight>>> findAll() {
+		
+		List<Flight> flightListAll = flightRepository.findAll();
+		GenericResponse<List<Flight>> response = new GenericResponse<>();
+		response.setData(flightListAll);
+		
+		if (flightListAll.isEmpty()) {
+            response.getErrors().add("Nenhum voo encontrado.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.setData(flightListAll);
+        return ResponseEntity.ok(response);	
+		
 	}
 
 }

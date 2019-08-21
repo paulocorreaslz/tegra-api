@@ -8,7 +8,10 @@ import org.springframework.http.ResponseEntity;
 import com.paulocorreaslz.tegra.model.Flight;
 import com.paulocorreaslz.tegra.model.FlightResponse;
 import com.paulocorreaslz.tegra.response.GenericResponse;
-
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
+ *
+ */
 public interface FlightService {
 
 	ResponseEntity<GenericResponse<FlightResponse>> findbyOriginDestinatinAndDate(String origin, String destination, String dateSearch);
@@ -19,4 +22,10 @@ public interface FlightService {
 	
 	List<Flight> getFlightsFromOriginDestination(String airportOrigin, String airportDestination, LocalDate flightDate);
 
+	List<Flight> findPlanes();
+	
+	List<Flight> findUber();
+	
+	ResponseEntity<GenericResponse<List<Flight>>> findAll();
+	
 }

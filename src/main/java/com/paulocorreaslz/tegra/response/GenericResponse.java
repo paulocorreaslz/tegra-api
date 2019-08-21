@@ -2,7 +2,10 @@ package com.paulocorreaslz.tegra.response;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * @author Paulo Correa <pauloyaco@gmail.com> - 2019
+ *
+ */
 public class GenericResponse<T> {
 
     private T data;

@@ -42,23 +42,22 @@ public class FlightController {
 	}
 
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir", response = Iterable.class, tags = "listar voos operados pela uberair")
-	@SuppressWarnings("resource")
 	@GetMapping("/uber")
 	public List<Flight> getUberFlights() throws java.text.ParseException, NumberFormatException  {	
-		return null;
+		return flightServiceImp.findUber();
 	}
 
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir e 99Planes", response = Iterable.class, tags = "listar todos os voos")
 	@GetMapping("/all")
-	public List<Flight> getAllFlights() throws IOException, java.text.ParseException{
-		return null;
+	public ResponseEntity<GenericResponse<List<Flight>>> getAllFlights(){
+		return flightServiceImp.findAll();
 	}
 
 
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela 99planes", response = Iterable.class, tags = "listar voos operados pela 99planes")
 	@GetMapping("/planes")
 	public List<Flight> getPlanesFlights() throws IOException{
-		return null;
+		return flightServiceImp.findPlanes();
 	}
 
 	@ApiOperation(value = "Método para buscar de voos operados pela uberAir e 99planes por origem, destino e data especificos", response = Iterable.class, tags = "buscar voos por origem, destino e data")
