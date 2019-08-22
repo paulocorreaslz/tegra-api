@@ -74,12 +74,34 @@ public class FlightServiceImp implements FlightService {
         return ResponseEntity.ok(response);	
 	}
 	
-	public List<Flight> findUber(){
-		return flightRepository.loadUber();
+	public ResponseEntity<GenericResponse<List<Flight>>> findUber(){
+		
+		List<Flight> flightListUber = flightRepository.loadUber();
+		GenericResponse<List<Flight>> response = new GenericResponse<>();
+		response.setData(flightListUber);
+		
+		if (flightListUber.isEmpty()) {
+            response.getErrors().add("Nenhum voo encontrado.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.setData(flightListUber);
+        return ResponseEntity.ok(response);	
+		
 	}
 
-	public List<Flight> findPlanes(){
-		return flightRepository.loadPlanes();
+	public ResponseEntity<GenericResponse<List<Flight>>> findPlanes(){
+		List<Flight> flightListPlanes = flightRepository.loadPlanes();
+		GenericResponse<List<Flight>> response = new GenericResponse<>();
+		response.setData(flightListPlanes);
+		
+		if (flightListPlanes.isEmpty()) {
+            response.getErrors().add("Nenhum voo encontrado.");
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        response.setData(flightListPlanes);
+        return ResponseEntity.ok(response);
 	}
 	
 	public List<Flight> selectFlightMidle(String origin, String destination, List<Flight> listGetFlights) {

@@ -22,9 +22,9 @@ public interface FlightService {
 	
 	List<Flight> getFlightsFromOriginDestination(String airportOrigin, String airportDestination, LocalDate flightDate);
 
-	List<Flight> findPlanes();
+	ResponseEntity<GenericResponse<List<Flight>>> findPlanes();
 	
-	List<Flight> findUber();
+	ResponseEntity<GenericResponse<List<Flight>>> findUber();
 	
 	ResponseEntity<GenericResponse<List<Flight>>> findAll();
 	

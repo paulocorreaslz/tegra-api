@@ -43,7 +43,7 @@ public class FlightController {
 
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela uberAir", response = Iterable.class, tags = "listar voos operados pela uberair")
 	@GetMapping("/uber")
-	public List<Flight> getUberFlights() throws java.text.ParseException, NumberFormatException  {	
+	public ResponseEntity<GenericResponse<List<Flight>>> getUberFlights() throws java.text.ParseException, NumberFormatException  {	
 		return flightServiceImp.findUber();
 	}
 
@@ -56,7 +56,7 @@ public class FlightController {
 
 	@ApiOperation(value = "Método para buscar trechos de voos operados pela 99planes", response = Iterable.class, tags = "listar voos operados pela 99planes")
 	@GetMapping("/planes")
-	public List<Flight> getPlanesFlights() throws IOException{
+	public ResponseEntity<GenericResponse<List<Flight>>> getPlanesFlights() throws IOException{
 		return flightServiceImp.findPlanes();
 	}
 
