@@ -7,7 +7,7 @@
 	</configSuffixes>
 	<enableImports><![CDATA[false]]></enableImports>
 	<configs>
-		<config>java:com.paulocorreaslz.tegra.TegraApplication</config>
+		<config>java:com.paulocorreaslz.tjma.TegraApplication</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>

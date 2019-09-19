@@ -110,7 +110,9 @@ public class FlightServiceImp implements FlightService {
 		for(Flight flight:listGetFlights) {
 			if (!flight.getOrigin().equals(origin) || !flight.getDestination().equals(destination)) {
 				if (control+1 == listGetFlights.size()) {
+					if (MINUTES.between(listGetFlights.get(control).getTimeArrival(), listGetFlights.get(listGetFlights.size()-1).getTimeDeparture()) < 720) {
 						newListFlightMidle.add(flight);
+					}
 				} else {
 					if (MINUTES.between(listGetFlights.get(control).getTimeArrival(), listGetFlights.get(control+1).getTimeDeparture()) < 720) {
 						newListFlightMidle.add(flight);

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +34,13 @@ public class AirportController {
 		
 		return airportService.findAll();
 	}
+	
+	@ApiOperation(value = "Método para busca aeroporto por sigla", response = Airport.class, tags = "listar aeroporto por sigla")
+	@GetMapping("/airport/{initial}")
+	public Airport loadAirports(@PathVariable("initial") String initials) throws IOException {
+		
+		return airportService.findAirportByInitials(initials);
+	}
+	
 	
 }
