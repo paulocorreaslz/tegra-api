@@ -17,7 +17,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication()
-			.withUser("public").password("public").roles("PUBLIC");
+			.withUser("admin").password("admin").roles("ROLES");
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 		http.authorizeRequests()
 			.antMatchers("/api/airports").permitAll()
 			.anyRequest().authenticated()
-			.and()
+			.and()	
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.csrf().disable();
 		
