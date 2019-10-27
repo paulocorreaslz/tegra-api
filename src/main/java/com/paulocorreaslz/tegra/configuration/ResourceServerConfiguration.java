@@ -1,5 +1,6 @@
 package com.paulocorreaslz.tegra.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,7 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @EnableResourceServer
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-	
+	@Autowired
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication()
 			.withUser("admin").password("admin").roles("ROLES");
@@ -24,6 +25,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 			.antMatchers("/api/airports").permitAll()
+			.antMatchers("/api/online").permitAll()
 			.anyRequest().authenticated()
 			.and()	
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
