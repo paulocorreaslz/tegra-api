@@ -26,6 +26,7 @@ public class AirportServiceImp implements AirportService {
 
         List<Airport> airports = this.airportRepository.findAll();
         if (airports.isEmpty()) {
+            response.getErrors().add("99");
             response.getErrors().add("Nenhum aeroporto encontrado.");
             return ResponseEntity.badRequest().body(response);
         }

@@ -4,6 +4,7 @@ import static java.time.temporal.ChronoUnit.MINUTES;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,24 +49,32 @@ public class FlightServiceImp implements FlightService {
 		List<Flight> listGetFlightsFull = new ArrayList<Flight>();
 		
 		LocalDate dateFlight = LocalDate.parse((String) dateSearch, dateFormatter);
-		
-		listGetFlights = this.getFlightsFromOriginDestination(origin, destination, dateFlight);
-
-		LocalDateTime dateTimeLeave = LocalDateTime.of(dateFlight, listGetFlights.get(0).getTimeDeparture()); 
-		LocalDateTime dateTimeArrival = LocalDateTime.of(dateFlight, listGetFlights.get(listGetFlights.size()-1).getTimeArrival());
-		
-		listGetFlightsMidle = selectFlightMidle(origin, destination, listGetFlights);
-		listGetFlightsDirect = selectFlightDirect(origin, destination, listGetFlightsDirect);
-		
-		listGetFlightsFull.addAll(listGetFlightsDirect);
-		listGetFlightsFull.addAll(listGetFlightsMidle);
-		
-		FlightResponse flightResponse = new FlightResponse(airportService.findAirportByInitials(origin), airportService.findAirportByInitials(destination), dateTimeLeave, dateTimeArrival, listGetFlightsFull);
-		
+		LocalDateTime dateTimeInicial = LocalDateTime.of(dateFlight,LocalTime.now());
 		GenericResponse<FlightResponse> response = new GenericResponse<>();
-		response.setData(flightResponse);
+		FlightResponse flightResponse = null;
+		try {
+			listGetFlights = this.getFlightsFromOriginDestination(origin, destination, dateFlight);	
+			if (!listGetFlights.isEmpty()) {
+				LocalDateTime dateTimeLeave = LocalDateTime.of(dateFlight, listGetFlights.get(0).getTimeDeparture()); 
+				LocalDateTime dateTimeArrival = LocalDateTime.of(dateFlight, listGetFlights.get(listGetFlights.size()-1).getTimeArrival());
+				
+				listGetFlightsMidle = selectFlightMidle(origin, destination, listGetFlights);
+				listGetFlightsDirect = selectFlightDirect(origin, destination, listGetFlightsDirect);
+				
+				listGetFlightsFull.addAll(listGetFlightsDirect);
+				listGetFlightsFull.addAll(listGetFlightsMidle);
+				
+				flightResponse = new FlightResponse(airportService.findAirportByInitials(origin), airportService.findAirportByInitials(destination), dateTimeLeave, dateTimeArrival, listGetFlightsFull);
+				response.setData(flightResponse);
+			} 
+		} catch (Exception e) {
+			System.out.println(e);
+		} finally {
+			flightResponse = new FlightResponse(airportService.findAirportByInitials(origin), airportService.findAirportByInitials(destination), dateTimeInicial, dateTimeInicial,listGetFlights);
+		}
 		
-		if (flightResponse.getScales().isEmpty()) {
+		if (flightResponse == null || flightResponse.getScales().isEmpty()) {
+            response.getErrors().add("99");
             response.getErrors().add("Nenhum trecho encontrado.");
             return ResponseEntity.badRequest().body(response);
         }
@@ -167,12 +176,14 @@ public class FlightServiceImp implements FlightService {
 				}
 			}
 		}
+		if (found != 0) {
+			listGraphs(listReturnFlights);
+			flightSearch.addGraph(graphAll);
+			List<String> listRoute = flightSearch.run(airportOrigin, airportDestination);
 		
-		listGraphs(listReturnFlights);
-		flightSearch.addGraph(graphAll);
-		List<String> listRoute = flightSearch.run(airportOrigin, airportDestination);
-	
-		listReturnFlightsRoutes = listRoutesFlight(listRoute,airportOrigin,listReturnFlights,flightDate);
+			listReturnFlightsRoutes = listRoutesFlight(listRoute,airportOrigin,listReturnFlights,flightDate);
+			
+		}
 		return listReturnFlightsRoutes;
 	}
 	
@@ -214,6 +225,7 @@ public class FlightServiceImp implements FlightService {
 		response.setData(flightListAll);
 		
 		if (flightListAll.isEmpty()) {
+            response.getErrors().add("99");
             response.getErrors().add("Nenhum voo encontrado.");
             return ResponseEntity.badRequest().body(response);
         }

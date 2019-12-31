@@ -24,7 +24,8 @@ import com.paulocorreaslz.tegra.service.imp.FlightServiceImp;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
-@CrossOrigin(origins = {"http://localhost","*"})
+//"http://localhost",
+@CrossOrigin(origins = {"*"})
 @RestController
 @RequestMapping("/api")
 @Api(value = "FlightController", description = "REST APIs for search flights and airports!")

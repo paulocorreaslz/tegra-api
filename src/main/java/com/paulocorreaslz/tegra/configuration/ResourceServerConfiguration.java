@@ -26,7 +26,8 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 		http.authorizeRequests()
 			.antMatchers("/api/airports").permitAll()
 			.antMatchers("/api/online").permitAll()
-			.anyRequest().authenticated()
+			.anyRequest().permitAll()
+			//.authenticated()
 			.and()	
 		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.csrf().disable();
