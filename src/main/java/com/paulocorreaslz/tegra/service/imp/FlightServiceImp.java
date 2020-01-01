@@ -76,7 +76,7 @@ public class FlightServiceImp implements FlightService {
 		if (flightResponse == null || flightResponse.getScales().isEmpty()) {
             response.getErrors().add("99");
             response.getErrors().add("Nenhum trecho encontrado.");
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.ok().body(response);
         }
 
         response.setData(flightResponse);
