@@ -33,7 +33,7 @@ class ELKController {
 		return response;
 	}
 
-	@RequestMapping(value = "/exception")
+	@RequestMapping(value = "/c")
 	public String createException() {
 		String response = "";
 		try {
